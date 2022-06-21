@@ -1,6 +1,6 @@
-#include "simulation/render/window.h"
-#include "parameters/parameters.h"
-#include "parameters/simulation_parameters.h"
+#include "window.h"
+#include "parameters.h"
+#include "simulation_parameters.h"
 #include "iostream"
 
 
