@@ -14,8 +14,8 @@ int main(int argc, char **argv) {
     parameters.parse_parameters(simulationParameters);
     simulationParameters.check_parameters();
 
-    Window *window = new Window(argc, argv, "Oil Spill Simulation", 1.0);
-    window->run();
+    Window::initializeWindow(argc, argv, "Oil Spill Simulation", 1.0);
+    Window::run();
 
     return 0;
 }
