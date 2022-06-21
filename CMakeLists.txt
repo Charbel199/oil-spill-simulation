@@ -11,6 +11,7 @@ include_directories(src)
 include_directories(src/parameters)
 include_directories(src/simulation/render)
 include_directories(src/simulation/camera)
+include_directories(src/simulation/helper)
 
 # Add all executables
 add_executable(Oil_Spill_Simulation
@@ -22,7 +23,9 @@ add_executable(Oil_Spill_Simulation
         src/simulation/render/window.cpp
         src/simulation/render/window.h
         src/simulation/camera/Camera.cpp
-        src/simulation/camera/Camera.h)
+        src/simulation/camera/Camera.h
+        src/simulation/helper/open_gl_helper.cpp
+        src/simulation/helper/open_gl_helper.h)
 
 # Add OpenGL and GLUT packages
 find_package(OpenGL REQUIRED)
