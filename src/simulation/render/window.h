@@ -16,7 +16,7 @@ namespace Window{
     void keyDown(unsigned char, int, int);
     void keyUp(unsigned char, int, int);
     void mouseMove(int, int);
-    void reshape(int, int);
+    void changeSize(int, int);
 
     void run();
     void quit();
