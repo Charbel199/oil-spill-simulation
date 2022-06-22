@@ -22,8 +22,8 @@ add_executable(Oil_Spill_Simulation
         src/parameters/simulation_parameters.cpp
         src/simulation/render/window.cpp
         src/simulation/render/window.h
-        src/simulation/camera/Camera.cpp
-        src/simulation/camera/Camera.h
+        src/simulation/camera/camera.cpp
+        src/simulation/camera/camera.h
         src/simulation/helper/open_gl_helper.cpp
         src/simulation/helper/open_gl_helper.h)
 
