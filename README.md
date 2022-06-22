@@ -11,6 +11,20 @@ Mathematically, deep water waves are defined as those occurring in ocean depths 
     - DFT vs FFT: DFT O(n^2) and FFT O(n log2 (n))
     - FFT algo → Cooley-Turkey (or Butterfly) algorithm
 
+# Some fluid dynamics theory
+
+There are three steps for a basic fluids simulation:
+* Add forces from velocities or external factors
+* Diffuse
+* Move
+
+This is inspired by the paper written by Jos Stam: [**Real-Time Fluid Dynamics for Games**](https://damassets.autodesk.net/content/dam/autodesk/research/publications-assets/pdf/realtime-fluid-dynamics-for.pdf)
+
+To keep it simple:
+* Diffusion means that each cell exchanges density with its direct neighbors
+* Advection means that the density moves through a static velocity field (We could have some fixed velocity for example to simulate wind)
+
+
 # To-Do
 
 * Research about shallow water simulations
