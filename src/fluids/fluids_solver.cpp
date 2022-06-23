@@ -15,7 +15,7 @@ FluidsSolver::FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient 
     this->diffusionCoefficient = diffusionCoefficient;
     this->timeStep = timeStep;
 
-    int fullGridSize = w * h;
+    fullGridSize = w * h;
 
     minX = 1.0f;
     maxX = w - 1.0f;
@@ -34,9 +34,10 @@ FluidsSolver::FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient 
     density = (float *) malloc(sizeof(float) * fullGridSize);
     prevDensity = (float *) malloc(sizeof(float) * fullGridSize);
 
-    // Pressure
-    pressureX = (float *) malloc(sizeof(float) * fullGridSize);
-    pressureY = (float *) malloc(sizeof(float) * fullGridSize);
+    // Particle centers (Center of each grid)
+    particleX = (float *) malloc(sizeof(float) * fullGridSize);
+    particleY = (float *) malloc(sizeof(float) * fullGridSize);
+
     div = (float *) malloc(sizeof(float) * fullGridSize);
     pressure = (float *) malloc(sizeof(float) * fullGridSize);
 
@@ -63,8 +64,8 @@ FluidsSolver::~FluidsSolver() {
     free(prevDensity)
 
     // Pressure
-    free(pressureX)
-    free(pressureY)
+    free(particleX)
+    free(particleY)
     free(div)
     free(pressure)
 
@@ -110,7 +111,7 @@ void FluidsSolver::clearBuffer() {
     memset(prevDensity, 0, sizeof(float) * totSize);
 }
 
-void FluidsSolver::updateBoundaries(float *values, int flag) {
+void FluidsSolver::updateEdges(float *values, int flag) {
 
     // General case
     if (flag == 0) {
@@ -155,4 +156,75 @@ void FluidsSolver::updateBoundaries(float *values, int flag) {
     values[cIdx(w - 1, 0)] = (values[cIdx(w - 2, 0)] + values[cIdx(w - 1, 1)]) / 2;
     values[cIdx(0, h - 1)] = (values[cIdx(0, h - 2)] + values[cIdx(1, h - 1)]) / 2;
     values[cIdx(w - 1, h - 1)] = (values[cIdx(w - 2, h - 1)] + values[cIdx(w - 1, h - 2)]) / 2;
+}
+
+void FluidsSolver::diffusion(float *values, float *previousValues, float diffusionRate, int flag) {
+    // Reset all new values to 0
+    for (int i = 0; i < fullGridSize; i++)
+        values[i] = 0.0f;
+
+
+    float diffusionAmount = diffusionRate * timeStep;
+
+    for (int k = 0; k < 20; k++) {
+        for (int i = 1; i <= rowSize - 2; i++) {
+            for (int j = 1; j <= colSize - 2; j++) {
+                // Grid square value takes the average of all adjacent grid squares (Top, left, right, bottom)
+                values[cIdx(i, j)] = (previousValues[cIdx(i, j)] +
+                        diffusionAmount *(values[cIdx(i + 1, j)] +
+                        values[cIdx(i - 1, j)] + values[cIdx(i, j + 1)] +values[cIdx(i, j - 1)]))
+                                /(4.0f * a + 1.0f);
+            }
+        }
+        updateEdges(values, flag);
+    }
+}
+
+void FluidsSolver::advection(float *values, float *previousValues, float *velocityX, float *velocityY, int flag) {
+    float sourceX;
+    float sourceY;
+    int leftGridPointX;
+    int rightGridPointX;
+    int bottomGridPointY;
+    int topGridPointY;
+    float weightLeft;
+    float weightRight;
+    float weightBottom;
+    float weightTop;
+
+    for (int i = 1; i <= rowSize - 2; i++) {
+        for (int j = 1; j <= colSize - 2; j++) {
+            // Get previous particle (source0 position
+            sourceX = particleX[cIdx(i, j)] - velocityX[cIdx(i, j)] * timeStep;
+            sourceY = particleY[cIdx(i, j)] - velocityY[cIdx(i, j)] * timeStep;
+
+            // Check edges
+            if (sourceX < minX) sourceX = minX;
+            if (sourceX > maxX) sourceX = maxX;
+            if (sourceY < minY) sourceY = minY;
+            if (sourceY > maxY) sourceY = maxY;
+
+            // Find 4 nearest grid points
+            leftGridPointX = (int) (sourceX - 0.5f);
+            bottomGridPointY = (int) (sourceY - 0.5f);
+            rightGridPointX = leftGridPointX + 1;
+            topGridPointY = bottomGridPointY + 1;
+
+            // Interpolate and get weights for Left, Right, Bottom and Top grid points (if source particle is close to
+            // the top right grid point, weights for top and right would be higher)
+            // TODO: Recheck logic
+            weightLeft = particleX[cIdx(rightGridPointX, bottomGridPointY)] - sourceX;
+            weightRight = 1.0f - weightLeft;
+            weightBottom = particleY[cIdx(leftGridPointX, topGridPointY)] - sourceY;
+            weightTop = 1.0f - weightBottom;
+
+            values[cIdx(i, j)] = weightBottom * (weightLeft * previousValues[cIdx(leftGridPointX, bottomGridPointY)] +
+                                                 weightRight *
+                                                 previousValues[cIdx(rightGridPointX, bottomGridPointY)]) +
+                                 weightTop * (weightLeft * previousValues[cIdx(leftGridPointX, topGridPointY)] +
+                                              weightRight * previousValues[cIdx(rightGridPointX, topGridPointY)]);
+        }
+    }
+
+    updateEdges(values, flag);
 }

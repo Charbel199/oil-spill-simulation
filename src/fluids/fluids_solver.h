@@ -19,11 +19,16 @@ public:
     // Clear previous velocity and density buffers
     void clearBuffer();
 
-    // Update boundaries (Flag: 0 represents the general case,
+    // Update edges (Flag: 0 represents the general case,
     // 1 represents the x-axis directional component,
     // 2 represents the y-axis directional component)
-    void updateBoundaries(float *values, int flag);
+    void updateEdges(float *values, int flag);
 
+    // Apply diffusion
+    void diffusion(float *values, float *previousValues, float diffusionRate, int flag);
+
+    // Apply advection
+    void advection(float *values, float *previousValues, float *velocityX, float *velocityY, int flag);
 
 private:
     int w;
@@ -41,7 +46,7 @@ private:
     float maxX;
     float minY;
     float maxY;
-
+    int fullGridSize;
 
     // Variables
 
@@ -56,8 +61,8 @@ private:
     float *prevDensity;
 
     // Pressure
-    float *pressureX;
-    float *pressureY;
+    float *particleX;
+    float *particleY;
     float *div;
     float *pressure;
 
