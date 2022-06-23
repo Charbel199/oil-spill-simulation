@@ -38,8 +38,9 @@ FluidsSolver::FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient 
     particleX = (float *) malloc(sizeof(float) * fullGridSize);
     particleY = (float *) malloc(sizeof(float) * fullGridSize);
 
-    div = (float *) malloc(sizeof(float) * fullGridSize);
-    pressure = (float *) malloc(sizeof(float) * fullGridSize);
+    // Velocity field and divergence
+    divergence = (float *) malloc(sizeof(float) * fullGridSize);
+    divergenceFreeVelocityField = (float *) malloc(sizeof(float) * fullGridSize);
 
     // Vorticity
     vorticity = (float *) malloc(sizeof(float) * fullGridSize);
@@ -66,8 +67,10 @@ FluidsSolver::~FluidsSolver() {
     // Pressure
     free(particleX)
     free(particleY)
-    free(div)
-    free(pressure)
+
+    // Velocity field and divergence
+    free(divergence)
+    free(divergenceFreeVelocityField)
 
     // Vorticity
     free(vorticity)
@@ -167,13 +170,14 @@ void FluidsSolver::diffusion(float *values, float *previousValues, float diffusi
     float diffusionAmount = diffusionRate * timeStep;
 
     for (int k = 0; k < 20; k++) {
-        for (int i = 1; i <= rowSize - 2; i++) {
-            for (int j = 1; j <= colSize - 2; j++) {
+        for (int i = 1; i <= w - 2; i++) {
+            for (int j = 1; j <= h - 2; j++) {
                 // Grid square value takes the average of all adjacent grid squares (Top, left, right, bottom)
                 values[cIdx(i, j)] = (previousValues[cIdx(i, j)] +
-                        diffusionAmount *(values[cIdx(i + 1, j)] +
-                        values[cIdx(i - 1, j)] + values[cIdx(i, j + 1)] +values[cIdx(i, j - 1)]))
-                                /(4.0f * a + 1.0f);
+                                      diffusionAmount * (values[cIdx(i + 1, j)] +
+                                                         values[cIdx(i - 1, j)] + values[cIdx(i, j + 1)] +
+                                                         values[cIdx(i, j - 1)]))
+                                     / (4.0f * a + 1.0f);
             }
         }
         updateEdges(values, flag);
@@ -192,8 +196,8 @@ void FluidsSolver::advection(float *values, float *previousValues, float *veloci
     float weightBottom;
     float weightTop;
 
-    for (int i = 1; i <= rowSize - 2; i++) {
-        for (int j = 1; j <= colSize - 2; j++) {
+    for (int i = 1; i <= w - 2; i++) {
+        for (int j = 1; j <= h - 2; j++) {
             // Get previous particle (source0 position
             sourceX = particleX[cIdx(i, j)] - velocityX[cIdx(i, j)] * timeStep;
             sourceY = particleY[cIdx(i, j)] - velocityY[cIdx(i, j)] * timeStep;
@@ -227,4 +231,40 @@ void FluidsSolver::advection(float *values, float *previousValues, float *veloci
     }
 
     updateEdges(values, flag);
+}
+
+
+void FluidsSolver::computeNewVelocities() {
+    for (int i = 1; i <= w - 2; i++) {
+        for (int j = 1; j <= h - 2; j++) {
+            divergence[cIdx(i, j)] = 0.5f * (velocityX[cIdx(i + 1, j)] - velocityX[cIdx(i - 1, j)] +
+                                             velocityY[cIdx(i, j + 1)] - velocityY[cIdx(i, j - 1)]);
+            divergenceFreeVelocityField[cIdx(i, j)] = 0.0f;;
+        }
+    }
+    updateEdges(divergence, 0);
+    updateEdges(divergenceFreeVelocityField, 0);
+
+    // Subtracting the divergence from the velocity field (To get a divergence free velocity matrix at the end)
+    // Using the Gaus-Seidel method to solve the system of equations, keeping in mind that the divergenceFreeVelocityField is a scalar
+    for (int k = 0; k < 20; k++) {
+        for (int i = 1; i <= w - 2; i++) {
+            for (int j = 1; j <= h - 2; j++) {
+                divergenceFreeVelocityField[cIdx(i, j)] =
+                        (divergenceFreeVelocityField[cIdx(i + 1, j)] + divergenceFreeVelocityField[cIdx(i - 1, j)] + divergenceFreeVelocityField[cIdx(i, j + 1)] +
+                         divergenceFreeVelocityField[cIdx(i, j - 1)] - divergence[cIdx(i, j)]) / 4.0f;
+            }
+        }
+        updateEdges(divergenceFreeVelocityField, 0);
+    }
+
+    // Computing the gradient of the divergenceFreeVelocityField to get the velocities
+    for (int i = 1; i <= w - 2; i++) {
+        for (int j = 1; j <= h - 2; j++) {
+            velocityX[cIdx(i, j)] -= 0.5f * (divergenceFreeVelocityField[cIdx(i + 1, j)] - divergenceFreeVelocityField[cIdx(i - 1, j)]);
+            velocityY[cIdx(i, j)] -= 0.5f * (divergenceFreeVelocityField[cIdx(i, j + 1)] - divergenceFreeVelocityField[cIdx(i, j - 1)]);
+        }
+    }
+    updateEdges(velocityX, 1);
+    updateEdges(velocityY, 2);
 }

@@ -30,6 +30,10 @@ public:
     // Apply advection
     void advection(float *values, float *previousValues, float *velocityX, float *velocityY, int flag);
 
+    // Use hemholtz decomposition method (Any vector field = curl-free vectors + divergence-free vectors)
+    // We will extract the divergence free vectors
+    void computeNewVelocities();
+
 private:
     int w;
     int h;
@@ -60,11 +64,13 @@ private:
     float *density;
     float *prevDensity;
 
-    // Pressure
+    // Particles
     float *particleX;
     float *particleY;
-    float *div;
-    float *pressure;
+
+    // Projection
+    float *divergence;
+    float *divergenceFreeVelocityField;
 
     // Vorticity
     float *vorticity;
