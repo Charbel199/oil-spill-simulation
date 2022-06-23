@@ -1,8 +1,9 @@
 #include "window.h"
+#include "fluids_window.h"
 #include "parameters.h"
 #include "simulation_parameters.h"
 #include "iostream"
-
+#include <vector>
 
 int main(int argc, char **argv) {
     // Initialize parameters
@@ -16,8 +17,11 @@ int main(int argc, char **argv) {
 
 
 
-    Window::initializeWindow(argc, argv, "Oil Spill Simulation", 0.1);
-    Window::run();
+//    Window::initializeWindow(argc, argv, "Oil Spill Simulation", 0.1);
+//    Window::run();
+
+    FluidsWindow::initializeWindow(argc, argv, "Fluids Simulation");
+    FluidsWindow::run();
 
     return 0;
 }

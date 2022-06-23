@@ -8,7 +8,7 @@
 
 
 namespace Window {
-    int timeElapsedForSetup;
+    int timeElapsed;
     int currentW = WIDTH, currentH = HEIGHT;
     int frame = 0;
     float red = 0, green = 0, blue = 0;
@@ -57,7 +57,7 @@ namespace Window {
         // Initialize OpenGL
         glutInit(&argc, argv);
         glutInitWindowSize(WIDTH, HEIGHT);
-        glutInitWindowPosition(10, 10);
+        glutInitWindowPosition(0, 0);
         glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
         glutCreateWindow(title.c_str());
         glEnable(GL_MULTISAMPLE);
@@ -84,7 +84,7 @@ namespace Window {
     }
 
     void run() {
-        timeElapsedForSetup = glutGet(GLUT_ELAPSED_TIME);
+        timeElapsed = glutGet(GLUT_ELAPSED_TIME);
         // Set background color
         glClearColor(0, 1, 1, 0.5);
         glClear(GL_COLOR_BUFFER_BIT);
