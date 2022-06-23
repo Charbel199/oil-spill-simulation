@@ -1,13 +1,10 @@
 #include "fluids_solver.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include "iostream"
 #include <fstream>
 
-FluidsSolver::FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient = 0.0001f,
-                           float vorticityCoefficient = 0.0f, float diffusionCoefficient = 0.0f, float timeStep = 1.0) {
+FluidsSolver::FluidsSolver(int w, int h, float viscosityCoefficient, float vorticityCoefficient, float diffusionCoefficient,
+                           float timeStep) {
     this->w = w;
     this->h = h;
     this->viscosityCoefficient = viscosityCoefficient;
@@ -55,37 +52,37 @@ FluidsSolver::FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient 
 FluidsSolver::~FluidsSolver() {
     // Free all malloc
     // Velocity
-    free(velocityX)
-    free(velocityY)
-    free(prevVelocityX)
-    free(prevVelocityY)
+    free(velocityX);
+    free(velocityY);
+    free(prevVelocityX);
+    free(prevVelocityY);
 
     // Density
-    free(density)
-    free(prevDensity)
+    free(density);
+    free(prevDensity);
 
     // Pressure
-    free(particleX)
-    free(particleY)
+    free(particleX);
+    free(particleY);
 
     // Velocity field and divergence
-    free(divergence)
-    free(divergenceFreeVelocityField)
+    free(divergence);
+    free(divergenceFreeVelocityField);
 
     // Vorticity
-    free(vorticity)
-    free(absVorticity)
-    free(gradVorticityX)
-    free(gradVorticityY)
-    free(lenGradient)
-    free(voriticityfx)
-    free(vorticityfy)
+    free(vorticity);
+    free(absVorticity);
+    free(gradVorticityX);
+    free(gradVorticityY);
+    free(lenGradient);
+    free(voriticityfx);
+    free(vorticityfy);
 }
 
 void FluidsSolver::exportArrayToCSV(float *values, std::string fileName) {
-    ofstream outputFile;
-    filename = fileName + ".csv";
-    outputFile.open(filename);
+    std::ofstream outputFile;
+    fileName = fileName + ".csv";
+    outputFile.open(fileName);
     for (int i = 0; i < w; i++) {
         for (int j = 0; j < h; j++) {
             if (j != h - 1) {
@@ -95,23 +92,23 @@ void FluidsSolver::exportArrayToCSV(float *values, std::string fileName) {
             }
 
         }
-        outputFile << endl;
+        outputFile << std::endl;
     }
     outputFile.close();
 }
 
 void FluidsSolver::reset() {
-    for (int i = 0; i < totSize; i++) {
+    for (int i = 0; i < fullGridSize; i++) {
         velocityX[i] = 0.0f;
         velocityY[i] = 0.0f;
         density[i] = 0.0f;
     }
 }
 
-void FluidsSolver::addSources() {
+void FluidsSolver::addSource() {
     int index;
-    for (int i = 1; i <= rowSize - 2; i++) {
-        for (int j = 1; j <= colSize - 2; j++) {
+    for (int i = 1; i <= w - 2; i++) {
+        for (int j = 1; j <= h - 2; j++) {
             index = cIdx(i, j);
             velocityX[index] += prevVelocityX[index];
             velocityY[index] += prevVelocityY[index];
@@ -125,9 +122,9 @@ void FluidsSolver::addSources() {
 }
 
 void FluidsSolver::clearBuffer() {
-    memset(prevVelocityX, 0, sizeof(float) * totSize);
-    memset(prevVelocityY, 0, sizeof(float) * totSize);
-    memset(prevDensity, 0, sizeof(float) * totSize);
+    memset(prevVelocityX, 0, sizeof(float) * fullGridSize);
+    memset(prevVelocityY, 0, sizeof(float) * fullGridSize);
+    memset(prevDensity, 0, sizeof(float) * fullGridSize);
 }
 
 void FluidsSolver::updateEdges(float *values, int flag) {
@@ -193,7 +190,7 @@ void FluidsSolver::diffusion(float *values, float *previousValues, float diffusi
                                       diffusionAmount * (values[cIdx(i + 1, j)] +
                                                          values[cIdx(i - 1, j)] + values[cIdx(i, j + 1)] +
                                                          values[cIdx(i, j - 1)]))
-                                     / (4.0f * a + 1.0f);
+                                     / (4.0f * diffusionAmount + 1.0f);
             }
         }
         updateEdges(values, flag);
