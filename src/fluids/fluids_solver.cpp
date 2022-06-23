@@ -108,6 +108,22 @@ void FluidsSolver::reset() {
     }
 }
 
+void FluidsSolver::addSources() {
+    int index;
+    for (int i = 1; i <= rowSize - 2; i++) {
+        for (int j = 1; j <= colSize - 2; j++) {
+            index = cIdx(i, j);
+            velocityX[index] += prevVelocityX[index];
+            velocityY[index] += prevVelocityY[index];
+            density[index] += prevDensity[index];
+        }
+    }
+
+    updateEdges(density, 0);
+    updateEdges(velocityX, 1);
+    updateEdges(velocityY, 2);
+}
+
 void FluidsSolver::clearBuffer() {
     memset(prevVelocityX, 0, sizeof(float) * totSize);
     memset(prevVelocityY, 0, sizeof(float) * totSize);
@@ -251,7 +267,8 @@ void FluidsSolver::computeNewVelocities() {
         for (int i = 1; i <= w - 2; i++) {
             for (int j = 1; j <= h - 2; j++) {
                 divergenceFreeVelocityField[cIdx(i, j)] =
-                        (divergenceFreeVelocityField[cIdx(i + 1, j)] + divergenceFreeVelocityField[cIdx(i - 1, j)] + divergenceFreeVelocityField[cIdx(i, j + 1)] +
+                        (divergenceFreeVelocityField[cIdx(i + 1, j)] + divergenceFreeVelocityField[cIdx(i - 1, j)] +
+                         divergenceFreeVelocityField[cIdx(i, j + 1)] +
                          divergenceFreeVelocityField[cIdx(i, j - 1)] - divergence[cIdx(i, j)]) / 4.0f;
             }
         }
@@ -261,10 +278,39 @@ void FluidsSolver::computeNewVelocities() {
     // Computing the gradient of the divergenceFreeVelocityField to get the velocities
     for (int i = 1; i <= w - 2; i++) {
         for (int j = 1; j <= h - 2; j++) {
-            velocityX[cIdx(i, j)] -= 0.5f * (divergenceFreeVelocityField[cIdx(i + 1, j)] - divergenceFreeVelocityField[cIdx(i - 1, j)]);
-            velocityY[cIdx(i, j)] -= 0.5f * (divergenceFreeVelocityField[cIdx(i, j + 1)] - divergenceFreeVelocityField[cIdx(i, j - 1)]);
+            velocityX[cIdx(i, j)] -=
+                    0.5f * (divergenceFreeVelocityField[cIdx(i + 1, j)] - divergenceFreeVelocityField[cIdx(i - 1, j)]);
+            velocityY[cIdx(i, j)] -=
+                    0.5f * (divergenceFreeVelocityField[cIdx(i, j + 1)] - divergenceFreeVelocityField[cIdx(i, j - 1)]);
         }
     }
     updateEdges(velocityX, 1);
     updateEdges(velocityY, 2);
+}
+
+void FluidsSolver::updateVelocities() {
+    if (diffusionCoefficient > 0.0f) {
+        SWAP(prevVelocityX, velocityX);
+        SWAP(prevVelocityY, velocityY);
+        diffusion(velocityX, prevVelocityX, diffusionCoefficient, 1);
+        diffusion(velocityY, prevVelocityY, diffusionCoefficient, 2);
+    }
+
+    computeNewVelocities();
+
+    SWAP(prevVelocityX, velocityX);
+    SWAP(prevVelocityY, velocityY);
+    advection(velocityX, prevVelocityX, prevVelocityX, prevVelocityY, 1);
+    advection(velocityY, prevVelocityY, prevVelocityX, prevVelocityY, 2);
+
+    computeNewVelocities();
+}
+
+void FluidsSolver::updateDensities() {
+    if (viscosityCoefficient > 0.0f) {
+        SWAP(prevDensity, density);
+        diffusion(density, prevDensity, viscosityCoefficient, 0);
+    }
+    SWAP(prevDensity, density);
+    advection(density, prevDensity, velocityX, velocityY, 0);
 }

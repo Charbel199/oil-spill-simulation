@@ -16,6 +16,9 @@ public:
     // Reset velocity and density arrays
     void reset();
 
+    // Add sources of velocity and density (Previous state)
+    void addSources();
+
     // Clear previous velocity and density buffers
     void clearBuffer();
 
@@ -33,6 +36,13 @@ public:
     // Use hemholtz decomposition method (Any vector field = curl-free vectors + divergence-free vectors)
     // We will extract the divergence free vectors
     void computeNewVelocities();
+
+    // Update velocities
+    void updateVelocities();
+
+    // Update densities
+    void updateDensities();
+
 
 private:
     int w;
