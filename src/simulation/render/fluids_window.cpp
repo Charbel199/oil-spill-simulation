@@ -122,7 +122,10 @@ namespace FluidsWindow {
             case 'V':
                 displayWindow = (displayWindow + 1) % 2;
                 break;
-
+            case 'p':
+            case 'P':
+                fluidsSolver->exportArrayToCSV(fluidsSolver->getD(), "densities");
+                break;
             case 'c':
             case 'C':
                 fluidsSolver->reset();
