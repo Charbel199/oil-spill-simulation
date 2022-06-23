@@ -47,6 +47,15 @@ FluidsSolver::FluidsSolver(int w, int h, float viscosityCoefficient, float vorti
     lenGradient = (float *) malloc(sizeof(float) * fullGridSize);
     voriticityfx = (float *) malloc(sizeof(float) * fullGridSize);
     vorticityfy = (float *) malloc(sizeof(float) * fullGridSize);
+
+    for(int i=0; i<w; i++)
+    {
+        for(int j=0; j<h; j++)
+        {
+            particleX[cIdx(i, j)] = (float)i+0.5f;
+            particleY[cIdx(i, j)] = (float)j+0.5f;
+        }
+    }
 }
 
 FluidsSolver::~FluidsSolver() {
