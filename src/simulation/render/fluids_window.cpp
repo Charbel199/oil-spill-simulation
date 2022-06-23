@@ -23,7 +23,7 @@ namespace FluidsWindow {
         fluidsSolver->updateVelocities();
         fluidsSolver->updateDensities();
 
-        glViewport(0, 0, WIDTH, HEIGHT);
+        glViewport(0, 0, currentW, currentH);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluOrtho2D(0.0f, (float) (fluidsSolver->getRowSize()), 0.0f, (float) (fluidsSolver->getColSize()));
@@ -109,7 +109,7 @@ namespace FluidsWindow {
 
         // Initialize OpenGL
         glutInit(&argc, argv);
-        glutInitWindowSize(WIDTH, HEIGHT);
+        glutInitWindowSize(currentW, currentH);
         glutInitWindowPosition(0, 0);
         glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
         glutCreateWindow(title.c_str());
@@ -145,8 +145,8 @@ namespace FluidsWindow {
         int yPos;
 
         if (mouseDown[0] || mouseDown[2]) {
-            xPos = (int) ((float) (oldMouseX) / WIDTH * (rowSize));
-            yPos = (int) ((float) (HEIGHT - oldMouseY) / HEIGHT * (colSize));
+            xPos = (int) ((float) (oldMouseX) / currentW * (rowSize));
+            yPos = (int) ((float) (HEIGHT - oldMouseY) / currentH * (colSize));
 
             if (xPos > 0 && xPos < rowSize - 1 && yPos > 0 && yPos < colSize - 1) {
                 if (mouseDown[0]) {
