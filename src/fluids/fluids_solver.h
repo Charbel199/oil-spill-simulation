@@ -10,8 +10,9 @@ public:
 
     ~FluidsSolver() {};
 
-    void exportArrayToCSV(float* value);
-
+    // Export any array to CSV file
+    void exportArrayToCSV(float* value, std::string fileName);
+    void reset();
 private:
     int w;
     int h;
