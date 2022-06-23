@@ -25,7 +25,7 @@ add_executable(Oil_Spill_Simulation
         src/simulation/camera/camera.cpp
         src/simulation/camera/camera.h
         src/simulation/helper/open_gl_helper.cpp
-        src/simulation/helper/open_gl_helper.h)
+        src/simulation/helper/open_gl_helper.h src/fluids/fluids_solver.cpp src/fluids/fluids_solver.h)
 
 # Add OpenGL and GLUT packages
 find_package(OpenGL REQUIRED)
