@@ -12,7 +12,14 @@ public:
 
     // Export any array to CSV file
     void exportArrayToCSV(float* value, std::string fileName);
+
+    // Reset velocity and density arrays
     void reset();
+
+    // Clear previous velocity and density buffers
+    void clearBuffer();
+
+
 private:
     int w;
     int h;

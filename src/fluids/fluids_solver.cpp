@@ -18,9 +18,9 @@ FluidsSolver::FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient 
     int fullGridSize = w * h;
 
     minX = 1.0f;
-    maxX = w-1.0f;
+    maxX = w - 1.0f;
     minY = 1.0f;
-    maxY = h-1.0f;
+    maxY = h - 1.0f;
 
     // Allocating memory, all vectors will be 1D vector for efficiency
 
@@ -82,13 +82,11 @@ void FluidsSolver::exportArrayToCSV(float *values, std::string fileName) {
     ofstream outputFile;
     filename = fileName + ".csv";
     outputFile.open(filename);
-    for(int i=0; i<w; i++)
-    {
-        for(int j=0; j<h; j++)
-        {
-            if(j != h-1){
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < h; j++) {
+            if (j != h - 1) {
                 outputFile << values[cIdx(i, j)] << ",";
-            }else{
+            } else {
                 outputFile << values[cIdx(i, j)];
             }
 
@@ -96,4 +94,18 @@ void FluidsSolver::exportArrayToCSV(float *values, std::string fileName) {
         outputFile << endl;
     }
     outputFile.close();
+}
+
+void FluidsSolver::reset() {
+    for (int i = 0; i < totSize; i++) {
+        velocityX[i] = 0.0f;
+        velocityY[i] = 0.0f;
+        density[i] = 0.0f;
+    }
+}
+
+void FluidsSolver::clearBuffer() {
+    memset(prevVelocityX, 0, sizeof(float) * totSize);
+    memset(prevVelocityY, 0, sizeof(float) * totSize);
+    memset(prevDensity, 0, sizeof(float) * totSize);
 }
