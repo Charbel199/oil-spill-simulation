@@ -11,13 +11,18 @@ public:
     ~FluidsSolver() {};
 
     // Export any array to CSV file
-    void exportArrayToCSV(float* value, std::string fileName);
+    void exportArrayToCSV(float *values, std::string fileName);
 
     // Reset velocity and density arrays
     void reset();
 
     // Clear previous velocity and density buffers
     void clearBuffer();
+
+    // Update boundaries (Flag: 0 represents the general case,
+    // 1 represents the x-axis directional component,
+    // 2 represents the y-axis directional component)
+    void updateBoundaries(float *values, int flag);
 
 
 private:

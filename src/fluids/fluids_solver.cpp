@@ -109,3 +109,50 @@ void FluidsSolver::clearBuffer() {
     memset(prevVelocityY, 0, sizeof(float) * totSize);
     memset(prevDensity, 0, sizeof(float) * totSize);
 }
+
+void FluidsSolver::updateBoundaries(float *values, int flag) {
+
+    // General case
+    if (flag == 0) {
+        for (int i = 1; i <= w - 2; i++) {
+            values[cIdx(i, 0)] = values[cIdx(i, 1)];
+            values[cIdx(i, h - 1)] = values[cIdx(i, h - 2)];
+        }
+        for (int j = 1; j <= h - 2; j++) {
+            values[cIdx(0, j)] = values[cIdx(1, j)];
+            values[cIdx(w - 1, j)] = values[cIdx(w - 2, j)];
+        }
+    }
+
+    // x-axis directional component
+    if (flag == 1) {
+        for (int i = 1; i <= w - 2; i++) {
+            values[cIdx(i, 0)] = values[cIdx(i, 1)];
+            values[cIdx(i, h - 1)] = values[cIdx(i, h - 2)];
+        }
+        for (int j = 1; j <= h - 2; j++) {
+            // Invert x velocity at left and right borders
+            values[cIdx(0, j)] = -values[cIdx(1, j)];
+            values[cIdx(w - 1, j)] = -values[cIdx(w - 2, j)];
+        }
+    }
+
+    // y-axis directional component
+    if (flag == 2) {
+        for (int i = 1; i <= w - 2; i++) {
+            // Invert x velocity at top and bottom borders
+            values[cIdx(i, 0)] = -values[cIdx(i, 1)];
+            values[cIdx(i, h - 1)] = -values[cIdx(i, h - 2)];
+        }
+        for (int j = 1; j <= h - 2; j++) {
+            values[cIdx(0, j)] = values[cIdx(1, j)];
+            values[cIdx(w - 1, j)] = values[cIdx(w - 2, j)];
+        }
+    }
+
+    // Update 4 corners (Average of adjacent cells)
+    values[cIdx(0, 0)] = (values[cIdx(0, 1)] + values[cIdx(1, 0)]) / 2;
+    values[cIdx(w - 1, 0)] = (values[cIdx(w - 2, 0)] + values[cIdx(w - 1, 1)]) / 2;
+    values[cIdx(0, h - 1)] = (values[cIdx(0, h - 2)] + values[cIdx(1, h - 1)]) / 2;
+    values[cIdx(w - 1, h - 1)] = (values[cIdx(w - 2, h - 1)] + values[cIdx(w - 1, h - 2)]) / 2;
+}
