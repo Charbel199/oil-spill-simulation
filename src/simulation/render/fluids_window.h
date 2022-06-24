@@ -11,6 +11,8 @@ namespace FluidsWindow {
 
     void renderScene();
 
+    void printInstructions();
+
     void drawVelocity();
 
     void drawDensity();

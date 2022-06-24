@@ -116,7 +116,27 @@ namespace FluidsWindow {
         }
         glEnd();
     }
-
+    void printInstructions() {
+        std::cout<< "\nHow to use this demo:\n\n";
+        std::cout<< "=================================\n";
+        std::cout<< "\nMouse controls:\n";
+        std::cout<< "RIGHT MOUSE CLICK\tAdd densities\n";
+        std::cout<< "LEFT MOUSE CLICK\tAdd velocities\n";
+        std::cout<< "\nKeyboard controls:\n";
+        std::cout<< "'R'\t\t\tIncrease viscosity\n";
+        std::cout<< "'F'\t\t\tDecrease viscosity\n";
+        std::cout<< "\n";
+        std::cout<< "'T'\t\t\tIncrease diffusion\n";
+        std::cout<< "'G'\t\t\tDecrease diffusion\n";
+        std::cout<< "\n";
+        std::cout<< "'V'\t\t\tToggle density/velocity display\n";
+        std::cout<< "\n";
+        std::cout<< "'X'\t\t\tClear density\n";
+        std::cout<< "'Z'\t\t\tClear velocity\n";
+        std::cout<< "'C'\t\t\tClear the entire simulation\n";
+        std::cout<< "'Esc'\t\t\tQuit\n";
+        std::cout<< "=================================\n";
+    }
     void initializeWindow(int argc, char **argv, std::string title) {
         fluidsSolver = new FluidsSolver();
         fluidsSolver->reset();
@@ -127,6 +147,9 @@ namespace FluidsWindow {
         glutInitWindowPosition(0, 0);
         glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
         glutCreateWindow(title.c_str());
+
+        // Print instructions
+        printInstructions();
     }
 
     void processNormalKeys(unsigned char key, int x, int y) {
@@ -155,6 +178,14 @@ namespace FluidsWindow {
             case 'g':
             case 'G':
                 fluidsSolver->changeDiffusionCoefficient(false);
+                break;
+            case 'x':
+            case 'X':
+                fluidsSolver->resetDensity();
+                break;
+            case 'z':
+            case 'Z':
+                fluidsSolver->resetVelocity();
                 break;
             case 'c':
             case 'C':
