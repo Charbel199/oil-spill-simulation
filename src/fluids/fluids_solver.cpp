@@ -154,20 +154,21 @@ void FluidsSolver::clearBuffer() {
 
 void FluidsSolver::updateEdges(float *values, int flag) {
 
-    // General case
-    if (flag == 0) {
-        for (int i = 1; i <= w - 2; i++) {
-            values[cIdx(i, 0)] = values[cIdx(i, 1)];
-            values[cIdx(i, h - 1)] = values[cIdx(i, h - 2)];
-        }
-        for (int j = 1; j <= h - 2; j++) {
-            values[cIdx(0, j)] = values[cIdx(1, j)];
-            values[cIdx(w - 1, j)] = values[cIdx(w - 2, j)];
-        }
-    }
 
     // Border cases
     if (!ignoreBorders) {
+        // General case
+        if (flag == 0) {
+            for (int i = 1; i <= w - 2; i++) {
+                values[cIdx(i, 0)] = values[cIdx(i, 1)];
+                values[cIdx(i, h - 1)] = values[cIdx(i, h - 2)];
+            }
+            for (int j = 1; j <= h - 2; j++) {
+                values[cIdx(0, j)] = values[cIdx(1, j)];
+                values[cIdx(w - 1, j)] = values[cIdx(w - 2, j)];
+            }
+        }
+
         // x-axis directional component
         if (flag == 1) {
             for (int i = 1; i <= w - 2; i++) {
@@ -388,12 +389,16 @@ void FluidsSolver::updateVortexConfinement() {
 void FluidsSolver::updateNormalizedDensities() {
     float max = 30;
     float min = 0;
-    for (int i = 0; i < fullGridSize; i++)
+    float sum = 0;
+    for (int i = 0; i < fullGridSize; i++) {
+        sum += density[i];
         if (density[i] > 30) {
             normalizedDensity[i] = 10.0f;
         } else {
             normalizedDensity[i] = ((density[i] - min) / (max - min)) * 10;
         }
+    }
+    std::cout<<"Density sum is "<<sum<<std::endl;
 }
 
 void FluidsSolver::addDensitySpot(int xPosition, int yPosition) {
