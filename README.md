@@ -32,6 +32,16 @@ a description of the evolution of a velocity field over time).
 The first equation represents the velocity equation (How the velocities change with time) and the second equation refers to 
 the density function (How density moves through time).
 
+# First simulations
+
+Here is the start of the simulation where we introduced an oil spill ranging from 1 -> 10 mm.
+![t0](assets/first_simulation_t0.png)
+
+After introducing velocity vectors from the south-west directed to the north-east, this is the result after a couple of seconds of simulation.
+![tT](assets/first_simulation_t+T.png)
+
+Here is also a look at the velocity field that was introduced.
+![velocity](assets/first_simulation_velocity_field.png)
 
 # To-Do
 
