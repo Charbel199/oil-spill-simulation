@@ -2,15 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fstream>
+#include <algorithm>
 
-FluidsSolver::FluidsSolver(int w, int h, float viscosityCoefficient, float vorticityCoefficient, float diffusionCoefficient,
-                           float timeStep) {
+FluidsSolver::FluidsSolver(int w, int h, float viscosityCoefficient, float vorticityCoefficient,
+                           float diffusionCoefficient, float timeStep, bool ignoreBorders) {
     this->w = w;
     this->h = h;
     this->viscosityCoefficient = viscosityCoefficient;
     this->vorticityCoefficient = vorticityCoefficient;
     this->diffusionCoefficient = diffusionCoefficient;
     this->timeStep = timeStep;
+    this->ignoreBorders = ignoreBorders;
 
     fullGridSize = w * h;
 
@@ -29,6 +31,7 @@ FluidsSolver::FluidsSolver(int w, int h, float viscosityCoefficient, float vorti
 
     // Density
     density = (float *) malloc(sizeof(float) * fullGridSize);
+    normalizedDensity = (float *) malloc(sizeof(float) * fullGridSize);
     prevDensity = (float *) malloc(sizeof(float) * fullGridSize);
 
     // Particle centers (Center of each grid)
@@ -48,12 +51,10 @@ FluidsSolver::FluidsSolver(int w, int h, float viscosityCoefficient, float vorti
     voriticityfx = (float *) malloc(sizeof(float) * fullGridSize);
     vorticityfy = (float *) malloc(sizeof(float) * fullGridSize);
 
-    for(int i=0; i<w; i++)
-    {
-        for(int j=0; j<h; j++)
-        {
-            particleX[cIdx(i, j)] = (float)i+0.5f;
-            particleY[cIdx(i, j)] = (float)j+0.5f;
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < h; j++) {
+            particleX[cIdx(i, j)] = (float) i + 0.5f;
+            particleY[cIdx(i, j)] = (float) j + 0.5f;
         }
     }
 }
@@ -68,6 +69,7 @@ FluidsSolver::~FluidsSolver() {
 
     // Density
     free(density);
+    free(normalizedDensity);
     free(prevDensity);
 
     // Pressure
@@ -150,31 +152,35 @@ void FluidsSolver::updateEdges(float *values, int flag) {
         }
     }
 
-    // x-axis directional component
-    if (flag == 1) {
-        for (int i = 1; i <= w - 2; i++) {
-            values[cIdx(i, 0)] = values[cIdx(i, 1)];
-            values[cIdx(i, h - 1)] = values[cIdx(i, h - 2)];
+    // Border cases
+    if(!ignoreBorders){
+        // x-axis directional component
+        if (flag == 1) {
+            for (int i = 1; i <= w - 2; i++) {
+                values[cIdx(i, 0)] = values[cIdx(i, 1)];
+                values[cIdx(i, h - 1)] = values[cIdx(i, h - 2)];
+            }
+            for (int j = 1; j <= h - 2; j++) {
+                // Invert x velocity at left and right borders
+                values[cIdx(0, j)] = -values[cIdx(1, j)];
+                values[cIdx(w - 1, j)] = -values[cIdx(w - 2, j)];
+            }
         }
-        for (int j = 1; j <= h - 2; j++) {
-            // Invert x velocity at left and right borders
-            values[cIdx(0, j)] = -values[cIdx(1, j)];
-            values[cIdx(w - 1, j)] = -values[cIdx(w - 2, j)];
+
+        // y-axis directional component
+        if (flag == 2) {
+            for (int i = 1; i <= w - 2; i++) {
+                // Invert x velocity at top and bottom borders
+                values[cIdx(i, 0)] = -values[cIdx(i, 1)];
+                values[cIdx(i, h - 1)] = -values[cIdx(i, h - 2)];
+            }
+            for (int j = 1; j <= h - 2; j++) {
+                values[cIdx(0, j)] = values[cIdx(1, j)];
+                values[cIdx(w - 1, j)] = values[cIdx(w - 2, j)];
+            }
         }
     }
 
-    // y-axis directional component
-    if (flag == 2) {
-        for (int i = 1; i <= w - 2; i++) {
-            // Invert x velocity at top and bottom borders
-            values[cIdx(i, 0)] = -values[cIdx(i, 1)];
-            values[cIdx(i, h - 1)] = -values[cIdx(i, h - 2)];
-        }
-        for (int j = 1; j <= h - 2; j++) {
-            values[cIdx(0, j)] = values[cIdx(1, j)];
-            values[cIdx(w - 1, j)] = values[cIdx(w - 2, j)];
-        }
-    }
 
     // Update 4 corners (Average of adjacent cells)
     values[cIdx(0, 0)] = (values[cIdx(0, 1)] + values[cIdx(1, 0)]) / 2;
@@ -313,10 +319,23 @@ void FluidsSolver::updateVelocities() {
 }
 
 void FluidsSolver::updateDensities() {
+    updateNormalizedDensities();
+
     if (viscosityCoefficient > 0.0f) {
         SWAP(prevDensity, density);
         diffusion(density, prevDensity, viscosityCoefficient, 0);
     }
     SWAP(prevDensity, density);
     advection(density, prevDensity, velocityX, velocityY, 0);
+}
+
+void FluidsSolver::updateNormalizedDensities() {
+    float max = 30;
+    float min = 0;
+    for (int i = 0; i < fullGridSize; i++)
+        if (density[i] > 30) {
+            normalizedDensity[i] = 10.0f;
+        } else {
+            normalizedDensity[i] = ((density[i] - min) / (max - min)) * 10;
+        }
 }
