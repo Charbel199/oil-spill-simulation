@@ -165,6 +165,22 @@ namespace FluidsWindow {
             case 'P':
                 fluidsSolver->exportArrayToCSV(fluidsSolver->getNormalizedDensity(), "densities");
                 break;
+            case 'd':
+            case 'D':
+                fluidsSolver->addWindX();
+                break;
+            case 'w':
+            case 'W':
+                fluidsSolver->addWindY();
+                break;
+            case 'a':
+            case 'A':
+                fluidsSolver->subtractWindX();
+                break;
+            case 's':
+            case 'S':
+                fluidsSolver->subtractWindY();
+                break;
             case 'b':
             case 'B':
                 fluidsSolver->changeIgnoreBorders();

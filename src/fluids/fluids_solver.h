@@ -110,7 +110,30 @@ public:
         ignoreBorders = !ignoreBorders;
         std::cout<<"Toggled ignore borders to "<<ignoreBorders<<std::endl;
     }
-
+    void addWindX(){
+        for (int i = 0; i < fullGridSize; i++) {
+            velocityX[i] += 0.5f;
+        }
+        std::cout<<"Add Wind X "<<std::endl;
+    }
+    void addWindY(){
+        for (int i = 0; i < fullGridSize; i++) {
+            velocityY[i] += 0.5f;
+        }
+        std::cout<<"Add Wind Y "<<std::endl;
+    }
+    void subtractWindX(){
+        for (int i = 0; i < fullGridSize; i++) {
+            velocityX[i] -= 0.5f;
+        }
+        std::cout<<"Subtract Wind X "<<std::endl;
+    }
+    void subtractWindY(){
+        for (int i = 0; i < fullGridSize; i++) {
+            velocityY[i] -= 0.5f;
+        }
+        std::cout<<"Subtract Wind Y "<<std::endl;
+    }
 private:
     int w;
     int h;
