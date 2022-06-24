@@ -115,6 +115,17 @@ void FluidsSolver::reset() {
         density[i] = 0.0f;
     }
 }
+void FluidsSolver::resetVelocity() {
+    for (int i = 0; i < fullGridSize; i++) {
+        velocityX[i] = 0.0f;
+        velocityY[i] = 0.0f;
+    }
+}
+void FluidsSolver::resetDensity() {
+    for (int i = 0; i < fullGridSize; i++) {
+        density[i] = 0.0f;
+    }
+}
 
 void FluidsSolver::addSource() {
     int index;

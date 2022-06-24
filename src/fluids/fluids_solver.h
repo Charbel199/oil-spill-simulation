@@ -20,6 +20,8 @@ public:
 
     // Reset velocity and density arrays
     void reset();
+    void resetVelocity();
+    void resetDensity();
 
     // Add sources of velocity and density (Previous state)
     void addSource();
