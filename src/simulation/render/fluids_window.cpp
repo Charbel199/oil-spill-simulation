@@ -130,6 +130,7 @@ namespace FluidsWindow {
         std::cout<< "'G'\t\t\tDecrease diffusion\n";
         std::cout<< "\n";
         std::cout<< "'V'\t\t\tToggle density/velocity display\n";
+        std::cout<< "'B'\t\t\tToggle ignore borders\n";
         std::cout<< "\n";
         std::cout<< "'X'\t\t\tClear density\n";
         std::cout<< "'Z'\t\t\tClear velocity\n";
@@ -162,6 +163,10 @@ namespace FluidsWindow {
             case 'p':
             case 'P':
                 fluidsSolver->exportArrayToCSV(fluidsSolver->getNormalizedDensity(), "densities");
+                break;
+            case 'b':
+            case 'B':
+                fluidsSolver->changeIgnoreBorders();
                 break;
             case 'r':
             case 'R':

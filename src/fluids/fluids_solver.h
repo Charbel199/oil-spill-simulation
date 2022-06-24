@@ -98,6 +98,10 @@ public:
         increase ? diffusionCoefficient += 0.001 : diffusionCoefficient -= 0.001;
         std::cout<<"Diffusion is now "<<diffusionCoefficient<<std::endl;
     }
+    void changeIgnoreBorders(){
+        ignoreBorders = !ignoreBorders;
+        std::cout<<"Toggled ignore borders to "<<ignoreBorders<<std::endl;
+    }
 
 private:
     int w;
