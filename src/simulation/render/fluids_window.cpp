@@ -133,6 +133,11 @@ namespace FluidsWindow {
         std::cout<< "'V'\t\t\tToggle density/velocity display\n";
         std::cout<< "'B'\t\t\tToggle ignore borders\n";
         std::cout<< "\n";
+        std::cout<< "'W'\t\t\tWind direction: Top\n";
+        std::cout<< "'A'\t\t\tWind direction: Left\n";
+        std::cout<< "'S'\t\t\tWind direction: Bottom\n";
+        std::cout<< "'D'\t\t\tWind direction: Right\n";
+        std::cout<< "\n";
         std::cout<< "'X'\t\t\tClear density\n";
         std::cout<< "'Z'\t\t\tClear velocity\n";
         std::cout<< "'C'\t\t\tClear the entire simulation\n";
