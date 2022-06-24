@@ -10,7 +10,8 @@
 class FluidsSolver {
 public:
     FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient = 0.00f,
-                 float vorticityCoefficient = 0.0f, float diffusionCoefficient = 0.0f, float timeStep = 1.0);
+                 float vorticityCoefficient = 0.0f, float diffusionCoefficient = 0.0f, float timeStep = 1.0,
+                 bool ignoreBorders = true);
 
     ~FluidsSolver();
 
@@ -47,6 +48,9 @@ public:
     // Update densities
     void updateDensities();
 
+    // Update densities
+    void updateNormalizedDensities();
+
     // Getters
     int getWidth() { return w; }
 
@@ -80,6 +84,16 @@ public:
 
     void setPreviousDensity(int i, int j, float value) { prevDensity[cIdx(i, j)] = value; }
 
+    void changeViscosityCoefficient(bool increase) {
+        increase ? viscosityCoefficient += 0.001 : viscosityCoefficient -= 0.001;
+        std::cout<<"Viscosity is now "<<viscosityCoefficient<<std::endl;
+    }
+
+    void changeDiffusionCoefficient(bool increase) {
+        increase ? diffusionCoefficient += 0.001 : diffusionCoefficient -= 0.001;
+        std::cout<<"Diffusion is now "<<diffusionCoefficient<<std::endl;
+    }
+
 private:
     int w;
     int h;
@@ -87,6 +101,7 @@ private:
     float vorticityCoefficient;
     float diffusionCoefficient;
     float timeStep;
+    bool ignoreBorders;
 
 
     int cIdx(int i, int j) { return j * h + i; }

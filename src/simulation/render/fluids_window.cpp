@@ -26,7 +26,7 @@ namespace FluidsWindow {
         glViewport(0, 0, currentW, currentH);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluOrtho2D(0.0f, (float) (fluidsSolver->getRowSize()), 0.0f, (float) (fluidsSolver->getColSize()));
+        gluOrtho2D(0.0f, (float) (fluidsSolver->getWidth()), 0.0f, (float) (fluidsSolver->getHeight()));
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -37,8 +37,8 @@ namespace FluidsWindow {
         glColor3f(1.0f, 0.0f, 0.0f);
         glPointSize(1.0f);
         glBegin(GL_POINTS);
-        for (int i = 0; i < fluidsSolver->getTotSize(); i++) {
-            glVertex2f(fluidsSolver->getPX()[i], fluidsSolver->getPY()[i]);
+        for (int i = 0; i < fluidsSolver->getFullGridSize(); i++) {
+            glVertex2f(fluidsSolver->getParticlesX()[i], fluidsSolver->getParticlesY()[i]);
         }
         glEnd();
 
@@ -52,20 +52,33 @@ namespace FluidsWindow {
     }
 
     void drawVelocity() {
-        float *px = fluidsSolver->getPX();
-        float *py = fluidsSolver->getPY();
-        float *vx = fluidsSolver->getVX();
-        float *vy = fluidsSolver->getVY();
+        float *px = fluidsSolver->getParticlesX();
+        float *py = fluidsSolver->getParticlesY();
+        float *vx = fluidsSolver->getVelocityX();
+        float *vy = fluidsSolver->getVelocityY();
 
         glColor3f(0.0f, 1.0f, 0.0f);
         glLineWidth(1.0f);
 
         glBegin(GL_LINES);
-        for (int i = 0; i < fluidsSolver->getTotSize(); i++) {
+        for (int i = 0; i < fluidsSolver->getFullGridSize(); i++) {
             glVertex2f(px[i], py[i]);
             glVertex2f(px[i] + vx[i] * 10.0f, py[i] + vy[i] * 10.0f);
         }
         glEnd();
+    }
+
+    void densityToColor(float density) {
+        float normalizedDensity = density / 10;
+        if (normalizedDensity < (0.25)) {
+            glColor3f(0.0f, 4 * normalizedDensity, 1.0f);
+        } else if (normalizedDensity < 0.5) {
+            glColor3f(0.0f, 1.0f, 1 + 4 * (0.25 - normalizedDensity));
+        } else if (normalizedDensity < 0.75) {
+            glColor3f(4 * (normalizedDensity - 0.5), 1.0f, 0.0f);
+        } else {
+            glColor3f(1.0f, 1 + 4 * (0.75 - normalizedDensity), 0.0f);
+        }
     }
 
     void drawDensity() {
@@ -76,8 +89,8 @@ namespace FluidsWindow {
         float d10;
         float d11;
 
-        int rowSize = fluidsSolver->getRowSize();
-        int colSize = fluidsSolver->getColSize();
+        int rowSize = fluidsSolver->getWidth();
+        int colSize = fluidsSolver->getHeight();
 
         glBegin(GL_QUADS);
         for (int i = 1; i <= rowSize - 2; i++) {
@@ -85,18 +98,19 @@ namespace FluidsWindow {
             for (int j = 1; j <= colSize - 2; j++) {
                 y = (float) j;
 
-                d00 = fluidsSolver->getDens(i, j);
-                d01 = fluidsSolver->getDens(i, j + 1);
-                d10 = fluidsSolver->getDens(i + 1, j);
-                d11 = fluidsSolver->getDens(i + 1, j + 1);
+                d00 = fluidsSolver->getNormalizedDensityPoint(i, j);
+                d01 = fluidsSolver->getNormalizedDensityPoint(i, j + 1);
+                d10 = fluidsSolver->getNormalizedDensityPoint(i + 1, j);
+                d11 = fluidsSolver->getNormalizedDensityPoint(i + 1, j + 1);
 
-                glColor3f(1.0f - d00, 1.0f, 1.0f - d00);
+
+                densityToColor(d00);
                 glVertex2f(x, y);
-                glColor3f(1.0f - d10, 1.0f, 1.0f - d10);
+                densityToColor(d10);
                 glVertex2f(x + 1.0f, y);
-                glColor3f(1.0f - d11, 1.0f, 1.0f - d11);
+                densityToColor(d11);
                 glVertex2f(x + 1.0f, y + 1.0f);
-                glColor3f(1.0f - d01, 1.0f, 1.0f - d01);
+                densityToColor(d01);
                 glVertex2f(x, y + 1.0f);
             }
         }
@@ -124,7 +138,23 @@ namespace FluidsWindow {
                 break;
             case 'p':
             case 'P':
-                fluidsSolver->exportArrayToCSV(fluidsSolver->getD(), "densities");
+                fluidsSolver->exportArrayToCSV(fluidsSolver->getNormalizedDensity(), "densities");
+                break;
+            case 'r':
+            case 'R':
+                fluidsSolver->changeViscosityCoefficient(true);
+                break;
+            case 'f':
+            case 'F':
+                fluidsSolver->changeViscosityCoefficient(false);
+                break;
+            case 't':
+            case 'T':
+                fluidsSolver->changeDiffusionCoefficient(true);
+                break;
+            case 'g':
+            case 'G':
+                fluidsSolver->changeDiffusionCoefficient(false);
                 break;
             case 'c':
             case 'C':
@@ -140,9 +170,9 @@ namespace FluidsWindow {
     void getInput() {
         fluidsSolver->clearBuffer();
 
-        //int totSize = fluidsSolver->getTotSize();
-        int rowSize = fluidsSolver->getRowSize();
-        int colSize = fluidsSolver->getColSize();
+        //int totSize = fluidsSolver->getFullGridSize();
+        int rowSize = fluidsSolver->getWidth();
+        int colSize = fluidsSolver->getHeight();
 
         int xPos;
         int yPos;
@@ -153,12 +183,12 @@ namespace FluidsWindow {
 
             if (xPos > 0 && xPos < rowSize - 1 && yPos > 0 && yPos < colSize - 1) {
                 if (mouseDown[0]) {
-                    fluidsSolver->setVX0(xPos, yPos, 1.0f * (mouseX - oldMouseX));
-                    fluidsSolver->setVY0(xPos, yPos, 1.0f * (oldMouseY - mouseY));
+                    fluidsSolver->setPreviousVelocityX(xPos, yPos, 1.0f * (mouseX - oldMouseX));
+                    fluidsSolver->setPreviousVelocityY(xPos, yPos, 1.0f * (oldMouseY - mouseY));
                 }
 
                 if (mouseDown[2]) {
-                    fluidsSolver->setD0(xPos, yPos, 10.0f);
+                    fluidsSolver->setPreviousDensity(xPos, yPos, 10.0f);
                 }
 
                 oldMouseX = mouseX;

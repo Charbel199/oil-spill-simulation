@@ -15,6 +15,8 @@ namespace FluidsWindow {
 
     void drawDensity();
 
+    void densityToColor(float density);
+
     void idleRenderScene();
 
     void initializeWindow(int argc, char **argv, std::string title);
