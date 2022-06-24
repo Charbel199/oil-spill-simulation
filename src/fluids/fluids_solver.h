@@ -9,7 +9,7 @@
 
 class FluidsSolver {
 public:
-    FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient = 0.0001f,
+    FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient = 0.00f,
                  float vorticityCoefficient = 0.0f, float diffusionCoefficient = 0.0f, float timeStep = 1.0);
 
     ~FluidsSolver();
@@ -48,31 +48,37 @@ public:
     void updateDensities();
 
     // Getters
-    int getRowSize() { return w; }
+    int getWidth() { return w; }
 
-    int getColSize() { return h; }
+    int getHeight() { return h; }
 
-    int getTotSize() { return fullGridSize; }
+    int getFullGridSize() { return fullGridSize; }
 
-    float *getVX() { return velocityX; }
+    float *getVelocityX() { return velocityX; }
 
-    float *getVY() { return velocityY; }
+    float *getVelocityY() { return velocityY; }
 
-    float *getD() { return density; }
+    float *getDensity() { return density; }
 
-    float *getPX() { return particleX; }
+    float *getNormalizedDensity() { return normalizedDensity; }
 
-    float *getPY() { return particleY; }
+    float *getParticlesX() { return particleX; }
 
-    float getDens(int i, int j) {
+    float *getParticlesY() { return particleY; }
+
+    float getNormalizedDensityPoint(int i, int j) {
         return
-                (density[cIdx(i - 1, j - 1)] + density[cIdx(i, j - 1)] + density[cIdx(i - 1, j)] +
-                 density[cIdx(i, j)]) / 4.0f;
+                (normalizedDensity[cIdx(i - 1, j - 1)] + normalizedDensity[cIdx(i, j - 1)] +
+                 normalizedDensity[cIdx(i - 1, j)] +
+                 normalizedDensity[cIdx(i, j)]) / 4.0f;
     }
+
     //setter
-    void setVX0(int i, int j, float value){ prevVelocityX[cIdx(i, j)]=value; }
-    void setVY0(int i, int j, float value){ prevVelocityY[cIdx(i, j)]=value; }
-    void setD0(int i, int j, float value){ prevDensity[cIdx(i, j)]=value; }
+    void setPreviousVelocityX(int i, int j, float value) { prevVelocityX[cIdx(i, j)] = value; }
+
+    void setPreviousVelocityY(int i, int j, float value) { prevVelocityY[cIdx(i, j)] = value; }
+
+    void setPreviousDensity(int i, int j, float value) { prevDensity[cIdx(i, j)] = value; }
 
 private:
     int w;
@@ -102,6 +108,7 @@ private:
 
     // Density
     float *density;
+    float *normalizedDensity;
     float *prevDensity;
 
     // Particles
