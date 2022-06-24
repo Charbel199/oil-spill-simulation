@@ -315,11 +315,11 @@ void FluidsSolver::computeNewVelocities() {
 }
 
 void FluidsSolver::updateVelocities() {
-    if (diffusionCoefficient > 0.0f) {
+    if (viscosityCoefficient > 0.0f) {
         SWAP(prevVelocityX, velocityX);
         SWAP(prevVelocityY, velocityY);
-        diffusion(velocityX, prevVelocityX, diffusionCoefficient, 1);
-        diffusion(velocityY, prevVelocityY, diffusionCoefficient, 2);
+        diffusion(velocityX, prevVelocityX, viscosityCoefficient, 1);
+        diffusion(velocityY, prevVelocityY, viscosityCoefficient, 2);
     }
 
     computeNewVelocities();
@@ -335,9 +335,9 @@ void FluidsSolver::updateVelocities() {
 void FluidsSolver::updateDensities() {
     updateNormalizedDensities();
 
-    if (viscosityCoefficient > 0.0f) {
+    if (diffusionCoefficient > 0.0f) {
         SWAP(prevDensity, density);
-        diffusion(density, prevDensity, viscosityCoefficient, 0);
+        diffusion(density, prevDensity, diffusionCoefficient, 0);
     }
     SWAP(prevDensity, density);
     advection(density, prevDensity, velocityX, velocityY, 0);

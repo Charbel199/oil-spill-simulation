@@ -9,8 +9,8 @@
 
 class FluidsSolver {
 public:
-    FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient = 0.00f,
-                 float vorticityCoefficient = 0.0f, float diffusionCoefficient = 0.0f, float timeStep = 1.0,
+    FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient = 1.0f,
+                 float vorticityCoefficient = 0.0f, float diffusionCoefficient = 0.02f, float timeStep = 1.0,
                  bool ignoreBorders = true);
 
     ~FluidsSolver();
