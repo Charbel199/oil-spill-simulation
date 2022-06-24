@@ -122,6 +122,7 @@ namespace FluidsWindow {
         std::cout<< "\nMouse controls:\n";
         std::cout<< "RIGHT MOUSE CLICK\tAdd densities\n";
         std::cout<< "LEFT MOUSE CLICK\tAdd velocities\n";
+        std::cout<< "MIDDLE MOUSE CLICK\tAdd density spot\n";
         std::cout<< "\nKeyboard controls:\n";
         std::cout<< "'R'\t\t\tIncrease viscosity\n";
         std::cout<< "'F'\t\t\tDecrease viscosity\n";
