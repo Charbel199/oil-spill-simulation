@@ -3,6 +3,7 @@
 #include <string.h>
 #include <fstream>
 #include <algorithm>
+#include <cmath>
 
 FluidsSolver::FluidsSolver(int w, int h, float viscosityCoefficient, float vorticityCoefficient,
                            float diffusionCoefficient, float timeStep, bool ignoreBorders) {
@@ -115,12 +116,14 @@ void FluidsSolver::reset() {
         density[i] = 0.0f;
     }
 }
+
 void FluidsSolver::resetVelocity() {
     for (int i = 0; i < fullGridSize; i++) {
         velocityX[i] = 0.0f;
         velocityY[i] = 0.0f;
     }
 }
+
 void FluidsSolver::resetDensity() {
     for (int i = 0; i < fullGridSize; i++) {
         density[i] = 0.0f;
@@ -164,7 +167,7 @@ void FluidsSolver::updateEdges(float *values, int flag) {
     }
 
     // Border cases
-    if(!ignoreBorders){
+    if (!ignoreBorders) {
         // x-axis directional component
         if (flag == 1) {
             for (int i = 1; i <= w - 2; i++) {
@@ -338,6 +341,48 @@ void FluidsSolver::updateDensities() {
     }
     SWAP(prevDensity, density);
     advection(density, prevDensity, velocityX, velocityY, 0);
+}
+
+void FluidsSolver::updateVortexConfinement() {
+    for (int i = 1; i <= w - 2; i++) {
+        for (int j = 1; j <= h - 2; j++) {
+            vorticity[cIdx(i, j)] = 0.5f *
+                                    (velocityY[cIdx(i + 1, j)] - velocityY[cIdx(i - 1, j)] - velocityX[cIdx(i, j + 1)] +
+                                     velocityX[cIdx(i, j - 1)]);
+            if (vorticity[cIdx(i, j)] >= 0.0f) absVorticity[cIdx(i, j)] = vorticity[cIdx(i, j)];
+            else absVorticity[cIdx(i, j)] = -vorticity[cIdx(i, j)];
+        }
+    }
+    updateEdges(vorticity, 0);
+    updateEdges(absVorticity, 0);
+
+    for (int i = 1; i <= w - 2; i++) {
+        for (int j = 1; j <= h - 2; j++) {
+            gradVorticityX[cIdx(i, j)] = 0.5f * (absVorticity[cIdx(i + 1, j)] - absVorticity[cIdx(i - 1, j)]);
+            gradVorticityY[cIdx(i, j)] = 0.5f * (absVorticity[cIdx(i, j + 1)] - absVorticity[cIdx(i, j - 1)]);
+            lenGradient[cIdx(i, j)] = sqrt(gradVorticityX[cIdx(i, j)] * gradVorticityX[cIdx(i, j)] +
+                                           gradVorticityY[cIdx(i, j)] * gradVorticityY[cIdx(i, j)]);
+            if (lenGradient[cIdx(i, j)] < 0.01f) {
+                voriticityfx[cIdx(i, j)] = 0.0f;
+                vorticityfy[cIdx(i, j)] = 0.0f;
+            } else {
+                voriticityfx[cIdx(i, j)] = gradVorticityX[cIdx(i, j)] / lenGradient[cIdx(i, j)];
+                vorticityfy[cIdx(i, j)] = gradVorticityY[cIdx(i, j)] / lenGradient[cIdx(i, j)];
+            }
+        }
+    }
+    updateEdges(voriticityfx, 0);
+    updateEdges(vorticityfy, 0);
+
+    for (int i = 1; i <= w - 2; i++) {
+        for (int j = 1; j <= h - 2; j++) {
+            velocityX[cIdx(i, j)] += vorticityCoefficient * (vorticityfy[cIdx(i, j)] * vorticity[cIdx(i, j)]);
+            velocityY[cIdx(i, j)] += vorticityCoefficient * (-voriticityfx[cIdx(i, j)] * vorticity[cIdx(i, j)]);
+        }
+    }
+
+    updateEdges(velocityX, 1);
+    updateEdges(velocityY, 2);
 }
 
 void FluidsSolver::updateNormalizedDensities() {

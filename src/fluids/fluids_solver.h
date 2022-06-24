@@ -53,6 +53,9 @@ public:
     // Update densities
     void updateNormalizedDensities();
 
+    // Update vortex confinement
+    void updateVortexConfinement();
+
     // Getters
     int getWidth() { return w; }
 

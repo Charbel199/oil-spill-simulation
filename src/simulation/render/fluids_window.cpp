@@ -19,7 +19,7 @@ namespace FluidsWindow {
 
     void renderScene() {
         getInput();
-//        fluidsSolver->vortConfinement();
+        fluidsSolver->updateVortexConfinement();
         fluidsSolver->updateVelocities();
         fluidsSolver->updateDensities();
 
@@ -201,7 +201,6 @@ namespace FluidsWindow {
     void getInput() {
         fluidsSolver->clearBuffer();
 
-        //int totSize = fluidsSolver->getFullGridSize();
         int rowSize = fluidsSolver->getWidth();
         int colSize = fluidsSolver->getHeight();
 
