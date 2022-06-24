@@ -96,14 +96,14 @@ public:
     void changeViscosityCoefficient(bool increase) {
         increase ? viscosityCoefficient += 0.001 : viscosityCoefficient -= 0.001;
         if (viscosityCoefficient < 0)
-            viscosityCoefficient = 0
+            viscosityCoefficient = 0;
         std::cout<<"Viscosity is now "<<viscosityCoefficient<<std::endl;
     }
 
     void changeDiffusionCoefficient(bool increase) {
         increase ? diffusionCoefficient += 0.001 : diffusionCoefficient -= 0.001;
         if (diffusionCoefficient < 0)
-            diffusionCoefficient = 0
+            diffusionCoefficient = 0;
         std::cout<<"Diffusion is now "<<diffusionCoefficient<<std::endl;
     }
     void changeIgnoreBorders(){
