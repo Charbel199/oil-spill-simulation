@@ -13,7 +13,7 @@ Mathematically, deep water waves are defined as those occurring in ocean depths 
 
 # Some fluid dynamics theory
 
-There are three steps for a basic fluids simulation:
+There are three steps for the movement of a basic fluids simulation:
 * Add forces from velocities or external factors
 * Diffuse
 * Move
@@ -24,10 +24,16 @@ To keep it simple:
 * Diffusion means that each cell exchanges density with its direct neighbors
 * Advection means that the density moves through a static velocity field (We could have some fixed velocity for example to simulate wind)
 
+The ultimate goal is to solve the main physical equations of fluid flow (Such as the Navier-Stokes equation which gives us 
+a description of the evolution of a velocity field over time).
+
+![NavierStokes](assets/Navier-Stokes_Equations.png)
+
+The first equation represents the velocity equation (How the velocities change with time) and the second equation refers to 
+the density function (How density moves through time).
+
 
 # To-Do
 
-* Research about shallow water simulations
-* Investigate all the mathematical tools that should be used to conduct an accurate simulation
 * Decide on the proper parameters to use for the oil spill simulation
-* Develop basic 2D simulation in python or c++
+* Tune the parameters to make the fluid as close as possible to actual oil (Viscosity, diffusion rate, ...)
