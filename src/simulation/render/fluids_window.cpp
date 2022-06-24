@@ -231,6 +231,13 @@ namespace FluidsWindow {
             }
 
             fluidsSolver->addSource();
+        }else if(mouseDown[1]){
+            xPos = (int) ((float) (oldMouseX) / currentW * (rowSize));
+            yPos = (int) ((float) (HEIGHT - oldMouseY) / currentH * (colSize));
+            fluidsSolver->addDensitySpot(xPos, yPos);
+
+            oldMouseX = mouseX;
+            oldMouseY = mouseY;
         }
     }
 

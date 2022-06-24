@@ -395,3 +395,24 @@ void FluidsSolver::updateNormalizedDensities() {
             normalizedDensity[i] = ((density[i] - min) / (max - min)) * 10;
         }
 }
+
+void FluidsSolver::addDensitySpot(int xPosition, int yPosition) {
+    int radius = 25;
+    for (int i = 1; i <= 10; i++) {
+        fillCircle(xPosition, yPosition, i, radius);
+        radius -= 2;
+    }
+    updateNormalizedDensities();
+}
+
+void FluidsSolver::fillCircle(int xPosition, int yPosition, int densityValue, int radius) {
+    for (int i = 1; i <= w - 2; i++) {
+        for (int j = 1; j <= h - 2; j++) {
+            if ((std::pow(i - xPosition,2) + std::pow(j - yPosition,2)) < std::pow(radius,2))
+            {
+                density[cIdx(i, j)] = densityValue * 3;
+            }
+        }
+    }
+}
+

@@ -26,6 +26,10 @@ public:
     // Add sources of velocity and density (Previous state)
     void addSource();
 
+    // Add density spot
+    void addDensitySpot(int xPosition, int yPosition);
+    void fillCircle(int xPosition, int yPosition, int densityValue, int radius);
+
     // Clear previous velocity and density buffers
     void clearBuffer();
 
