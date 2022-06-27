@@ -43,7 +43,12 @@ After introducing velocity vectors from the south-west directed to the north-eas
 Here is also a look at the velocity field that was introduced.
 ![velocity](assets/first_simulation_velocity_field.png)
 
+The simulation's performance is acceptable, though the grid size should not exceed 250x250 in general.
+Here is a full view of the oil spill simulation:
+![sim](assets/first_full_sim.gif)
+
 # To-Do
 
 * Decide on the proper parameters to use for the oil spill simulation
 * Tune the parameters to make the fluid as close as possible to actual oil (Viscosity, diffusion rate, ...)
+* Test generated oil spills on oil spill detection and thickness ML models
