@@ -1,6 +1,8 @@
 # Oil Spill Simulation
 The aim of this project is to simulate the event of an oil spill as accurately as possible to use it for developing oill spill detection and thickness estimation algorithms.
 
+The technical goal would be to extract information/parameters from waves equations, introduce them in a fluids simulation and extract radar reflectivities based on the oil distribution, environment factors (e.g. Surface roughness) and radar frequencies.
+
 # Some ocean waves theory
 Mathematically, deep water waves are defined as those occurring in ocean depths greater than twice the wavelength of the wave. For example, if the wavelength of a particular wave is 10 meters, then the wave is considered a deep water wave if the depth of the ocean is greater than 5 meters where the wave is occurring.
 
@@ -64,6 +66,7 @@ Low viscosity coefficient (~0.1)     |  High viscosity coefficient (~1)
 
 The simulation's performance is acceptable, though the grid size should not exceed 250x250 in general.
 Here is a full view of the oil spill simulation:
+
 ![sim](assets/first_full_sim.gif)
 
 # To-Do
