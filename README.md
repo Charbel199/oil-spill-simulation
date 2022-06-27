@@ -35,13 +35,28 @@ the density function (How density moves through time).
 # First simulations
 
 Here is the start of the simulation where we introduced an oil spill ranging from 1 -> 10 mm.
+
 ![t0](assets/first_simulation_t0.png)
 
-After introducing velocity vectors from the south-west directed to the north-east, this is the result after a couple of seconds of simulation.
+After introducing velocity vectors from the south-west directed to the north-east, we get the following result after a couple of seconds of simulation.
+
 ![tT](assets/first_simulation_t+T.png)
 
-Here is also a look at the velocity field that was introduced.
+You can take a look the velocity field that was introduced.
+
 ![velocity](assets/first_simulation_velocity_field.png)
+
+Two parameters are mainly responsible for the diffusion of the density of the liquid and its velocity vectors:
+* Diffusion Coefficient: It is directly proportional to how fast the liquid density will diffuse (If no velocity vectors are acting on it, the liquid will start dispersing on its own)
+
+Low diffusion coefficient (~0.1)     |  High diffusion coefficient (~0.42)
+:-------------------------:|:-------------------------:
+![sim](assets/first_simulation_low_diffusion_coef.gif)  |  ![sim](assets/first_simulation_high_diffusion_coef.gif)
+
+
+* Viscosity Coefficient: It is directly proportional to how fast the velocity vectors will diffuse (Viscous liquids are less affected by velocity vectors that non-viscous liquids)
+
+
 
 The simulation's performance is acceptable, though the grid size should not exceed 250x250 in general.
 Here is a full view of the oil spill simulation:
