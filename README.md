@@ -51,10 +51,14 @@ Two parameters are mainly responsible for the diffusion of the density of the li
 
 Low diffusion coefficient (~0.1)     |  High diffusion coefficient (~0.42)
 :-------------------------:|:-------------------------:
-![sim](assets/first_simulation_low_diffusion_coef.gif)  |  ![sim](assets/first_simulation_high_diffusion_coef.gif)
+![diff1](assets/first_simulation_low_diffusion_coef.gif)  |  ![diff2](assets/first_simulation_high_diffusion_coef.gif)
 
 
 * Viscosity Coefficient: It is directly proportional to how fast the velocity vectors will diffuse (Viscous liquids are less affected by velocity vectors that non-viscous liquids)
+
+Low viscosity coefficient (~0.1)     |  High viscosity coefficient (~1)
+:-------------------------:|:-------------------------:
+![visc1](assets/first_simulation_low_viscosity_coef.gif)  |  ![visc2](assets/first_simulation_high_viscosity_coef.gif)
 
 
 
