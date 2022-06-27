@@ -398,7 +398,6 @@ void FluidsSolver::updateNormalizedDensities() {
             normalizedDensity[i] = ((density[i] - min) / (max - min)) * 10;
         }
     }
-    std::cout<<"Density sum is "<<sum<<std::endl;
 }
 
 void FluidsSolver::addDensitySpot(int xPosition, int yPosition) {
