@@ -107,6 +107,7 @@ void FluidsSolver::exportArrayToCSV(float *values, std::string fileName) {
         outputFile << std::endl;
     }
     outputFile.close();
+    std::cout<<"Exported to "<<fileName<<" successfully"<<std::endl;
 }
 
 void FluidsSolver::reset() {

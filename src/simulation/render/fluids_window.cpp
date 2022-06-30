@@ -5,6 +5,13 @@
 #include <cstring>
 #include "open_gl_helper.h"
 #include "fluids_solver.h"
+#include <string>
+#include <filesystem>
+#include "iostream"
+#include <experimental/filesystem>
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <algorithm>
 
 namespace FluidsWindow {
     FluidsSolver *fluidsSolver;
@@ -16,6 +23,7 @@ namespace FluidsWindow {
     int oldMouseY;
     int mouseDown[3];
     int displayWindow = 1;
+    std::string output_path;
 
     void renderScene() {
         getInput();
@@ -116,35 +124,38 @@ namespace FluidsWindow {
         }
         glEnd();
     }
+
     void printInstructions() {
-        std::cout<< "\nHow to use this demo:\n\n";
-        std::cout<< "=================================\n";
-        std::cout<< "\nMouse controls:\n";
-        std::cout<< "RIGHT MOUSE CLICK\tAdd densities\n";
-        std::cout<< "LEFT MOUSE CLICK\tAdd velocities\n";
-        std::cout<< "MIDDLE MOUSE CLICK\tAdd density spot\n";
-        std::cout<< "\nKeyboard controls:\n";
-        std::cout<< "'R'\t\t\tIncrease viscosity\n";
-        std::cout<< "'F'\t\t\tDecrease viscosity\n";
-        std::cout<< "\n";
-        std::cout<< "'T'\t\t\tIncrease diffusion\n";
-        std::cout<< "'G'\t\t\tDecrease diffusion\n";
-        std::cout<< "\n";
-        std::cout<< "'V'\t\t\tToggle density/velocity display\n";
-        std::cout<< "'B'\t\t\tToggle ignore borders\n";
-        std::cout<< "\n";
-        std::cout<< "'W'\t\t\tWind direction: Top\n";
-        std::cout<< "'A'\t\t\tWind direction: Left\n";
-        std::cout<< "'S'\t\t\tWind direction: Bottom\n";
-        std::cout<< "'D'\t\t\tWind direction: Right\n";
-        std::cout<< "\n";
-        std::cout<< "'X'\t\t\tClear density\n";
-        std::cout<< "'Z'\t\t\tClear velocity\n";
-        std::cout<< "'C'\t\t\tClear the entire simulation\n";
-        std::cout<< "'Esc'\t\t\tQuit\n";
-        std::cout<< "=================================\n";
+        std::cout << "\nHow to use this demo:\n\n";
+        std::cout << "=================================\n";
+        std::cout << "\nMouse controls:\n";
+        std::cout << "RIGHT MOUSE CLICK\tAdd densities\n";
+        std::cout << "LEFT MOUSE CLICK\tAdd velocities\n";
+        std::cout << "MIDDLE MOUSE CLICK\tAdd density spot\n";
+        std::cout << "\nKeyboard controls:\n";
+        std::cout << "'R'\t\t\tIncrease viscosity\n";
+        std::cout << "'F'\t\t\tDecrease viscosity\n";
+        std::cout << "\n";
+        std::cout << "'T'\t\t\tIncrease diffusion\n";
+        std::cout << "'G'\t\t\tDecrease diffusion\n";
+        std::cout << "\n";
+        std::cout << "'V'\t\t\tToggle density/velocity display\n";
+        std::cout << "'B'\t\t\tToggle ignore borders\n";
+        std::cout << "\n";
+        std::cout << "'W'\t\t\tWind direction: Top\n";
+        std::cout << "'A'\t\t\tWind direction: Left\n";
+        std::cout << "'S'\t\t\tWind direction: Bottom\n";
+        std::cout << "'D'\t\t\tWind direction: Right\n";
+        std::cout << "\n";
+        std::cout << "'X'\t\t\tClear density\n";
+        std::cout << "'Z'\t\t\tClear velocity\n";
+        std::cout << "'C'\t\t\tClear the entire simulation\n";
+        std::cout << "'Esc'\t\t\tQuit\n";
+        std::cout << "=================================\n";
     }
+
     void initializeWindow(int argc, char **argv, std::string title) {
+        parse_config();
         fluidsSolver = new FluidsSolver();
         fluidsSolver->reset();
 
@@ -159,8 +170,37 @@ namespace FluidsWindow {
         printInstructions();
     }
 
-    void processNormalKeys(unsigned char key, int x, int y) {
+    void parse_config() {
+        std::ifstream ifs("src/config/config.json");
+        nlohmann::json js = nlohmann::json::parse(ifs);
 
+        output_path = js["output_path"];
+    }
+
+    std::string checkNextFileName(std::string directory, std::string prefix) {
+        std::vector <std::string> file_names;
+        std::vector<int> file_index;
+        for (const auto &entry: std::experimental::filesystem::directory_iterator(directory)) {
+            std::string str = entry.path().filename().string();
+            file_names.push_back(str);
+
+            size_t i = 0;
+            for (; i < str.length(); i++) { if (isdigit(str[i])) break; }
+
+            // remove the first chars, which aren't digits
+            str = str.substr(i, str.length() - i);
+            int num = atoi(str.c_str());
+
+            file_index.push_back(num);
+
+        }
+        int max = *max_element(file_index.begin(), file_index.end());
+        return directory + "/" + prefix + std::to_string(max + 1);
+
+    }
+
+    void processNormalKeys(unsigned char key, int x, int y) {
+        std::string file_path;
         switch (key) {
             case 'v':
             case 'V':
@@ -168,7 +208,8 @@ namespace FluidsWindow {
                 break;
             case 'p':
             case 'P':
-                fluidsSolver->exportArrayToCSV(fluidsSolver->getNormalizedDensity(), "densities");
+                file_path = checkNextFileName(output_path, "y");
+                fluidsSolver->exportArrayToCSV(fluidsSolver->getNormalizedDensity(), file_path);
                 break;
             case 'd':
             case 'D':
@@ -253,7 +294,7 @@ namespace FluidsWindow {
             }
 
             fluidsSolver->addSource();
-        }else if(mouseDown[1]){
+        } else if (mouseDown[1]) {
             xPos = (int) ((float) (oldMouseX) / currentW * (rowSize));
             yPos = (int) ((float) (HEIGHT - oldMouseY) / currentH * (colSize));
             fluidsSolver->addDensitySpot(xPos, yPos);

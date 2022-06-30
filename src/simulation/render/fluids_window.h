@@ -36,7 +36,9 @@ namespace FluidsWindow {
 
     void changeSize(int w, int h);
 
+    std::string checkNextFileName(std::string directory, std::string prefix);
 
+    void parse_config();
 };
 
 
