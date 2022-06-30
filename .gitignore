@@ -180,5 +180,5 @@ cmake-build-debug
 
 .vscode
 
-*.csv
+*/output/*
 **/config.json
