@@ -171,31 +171,31 @@ namespace FluidsWindow {
     }
 
     void parse_config() {
+        // Parse config json file
         std::ifstream ifs("src/config/config.json");
         nlohmann::json js = nlohmann::json::parse(ifs);
 
+        // Set variables
         output_path = js["output_path"];
     }
 
     std::string checkNextFileName(std::string directory, std::string prefix) {
-        std::vector <std::string> file_names;
         std::vector<int> file_index;
         for (const auto &entry: std::experimental::filesystem::directory_iterator(directory)) {
             std::string str = entry.path().filename().string();
-            file_names.push_back(str);
-
             size_t i = 0;
             for (; i < str.length(); i++) { if (isdigit(str[i])) break; }
 
             // remove the first chars, which aren't digits
             str = str.substr(i, str.length() - i);
+            // get file index
             int num = atoi(str.c_str());
 
             file_index.push_back(num);
 
         }
-        int max = *max_element(file_index.begin(), file_index.end());
-        return directory + "/" + prefix + std::to_string(max + 1);
+        int max_index = *max_element(file_index.begin(), file_index.end());
+        return directory + "/" + prefix + std::to_string(max_index + 1);
 
     }
 
