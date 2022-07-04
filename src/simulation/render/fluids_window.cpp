@@ -156,7 +156,7 @@ namespace FluidsWindow {
 
     void initializeWindow(int argc, char **argv, std::string title) {
         parse_config();
-        fluidsSolver = new FluidsSolver();
+        fluidsSolver = new FluidsSolver(100, 100);
         fluidsSolver->reset();
 
         // Initialize OpenGL
