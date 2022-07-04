@@ -74,3 +74,9 @@ Here is a full view of the oil spill simulation:
 * Decide on the proper parameters to use for the oil spill simulation
 * Tune the parameters to make the fluid as close as possible to actual oil (Viscosity, diffusion rate, ...)
 * Test generated oil spills on oil spill detection and thickness ML models
+
+# Resources & References
+
+* https://github.com/deiss/fftocean
+* https://github.com/finallyjustice/stablefluids
+* https://damassets.autodesk.net/content/dam/autodesk/research/publications-assets/pdf/realtime-fluid-dynamics-for.pdf
