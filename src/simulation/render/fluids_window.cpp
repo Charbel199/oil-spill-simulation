@@ -24,6 +24,7 @@ namespace FluidsWindow {
     int mouseDown[5];
     int displayWindow = 1;
     int radius = 25;
+    int stepSize = 2;
     std::string output_path;
 
     void renderScene() {
@@ -133,7 +134,11 @@ namespace FluidsWindow {
         std::cout << "RIGHT MOUSE CLICK\tAdd densities\n";
         std::cout << "LEFT MOUSE CLICK\tAdd velocities\n";
         std::cout << "MIDDLE MOUSE CLICK\tAdd density spot\n";
+        std::cout << "SCROLL WHEEL\tChange density spot radius\n";
         std::cout << "\nKeyboard controls:\n";
+        std::cout << "'Q'\t\t\tIncrease density spot step size\n";
+        std::cout << "'E'\t\t\tDecrease density spot step size\n";
+        std::cout << "\n";
         std::cout << "'R'\t\t\tIncrease viscosity\n";
         std::cout << "'F'\t\t\tDecrease viscosity\n";
         std::cout << "\n";
@@ -260,6 +265,16 @@ namespace FluidsWindow {
             case 'C':
                 fluidsSolver->reset();
                 break;
+            case 'q':
+            case 'Q':
+                stepSize++;
+                std::cout<<"Increased step size to "<<stepSize<<std::endl;
+                break;
+            case 'e':
+            case 'E':
+                stepSize = (stepSize > 1) ? stepSize - 1 : 1;
+                std::cout<<"Decreased step size to "<<stepSize<<std::endl;
+                break;
             case 27: // escape
                 exit(0);
                 break;
@@ -298,12 +313,13 @@ namespace FluidsWindow {
         } else if (mouseDown[1]) {
             xPos = (int) ((float) (oldMouseX) / currentW * (rowSize));
             yPos = (int) ((float) (HEIGHT - oldMouseY) / currentH * (colSize));
-            fluidsSolver->addDensitySpot(xPos, yPos, radius);
+            fluidsSolver->addDensitySpot(xPos, yPos, radius, stepSize);
 
             oldMouseX = mouseX;
             oldMouseY = mouseY;
         }
     }
+
     void mouseMove(int x, int y) {
         mouseX = x;
         mouseY = y;
@@ -324,7 +340,7 @@ namespace FluidsWindow {
             if (state == GLUT_UP) return; // Disregard redundant GLUT_UP events
             if (button == 3) radius++;
             if (button == 4) radius = (radius > 3) ? radius - 1 : 3;
-        }else{
+        } else {
             mouseDown[button] = state == GLUT_DOWN;
         }
     }

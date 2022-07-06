@@ -20,14 +20,17 @@ public:
 
     // Reset velocity and density arrays
     void reset();
+
     void resetVelocity();
+
     void resetDensity();
 
     // Add sources of velocity and density (Previous state)
     void addSource();
 
     // Add density spot
-    void addDensitySpot(int xPosition, int yPosition, int radius = 25);
+    void addDensitySpot(int xPosition, int yPosition, int radius = 25, int stepSize= 2);
+
     void fillCircle(int xPosition, int yPosition, int densityValue, int radius);
 
     // Clear previous velocity and density buffers
@@ -97,43 +100,49 @@ public:
         increase ? viscosityCoefficient += 0.001 : viscosityCoefficient -= 0.001;
         if (viscosityCoefficient < 0)
             viscosityCoefficient = 0;
-        std::cout<<"Viscosity is now "<<viscosityCoefficient<<std::endl;
+        std::cout << "Viscosity is now " << viscosityCoefficient << std::endl;
     }
 
     void changeDiffusionCoefficient(bool increase) {
         increase ? diffusionCoefficient += 0.001 : diffusionCoefficient -= 0.001;
         if (diffusionCoefficient < 0)
             diffusionCoefficient = 0;
-        std::cout<<"Diffusion is now "<<diffusionCoefficient<<std::endl;
+        std::cout << "Diffusion is now " << diffusionCoefficient << std::endl;
     }
-    void changeIgnoreBorders(){
+
+    void changeIgnoreBorders() {
         ignoreBorders = !ignoreBorders;
-        std::cout<<"Toggled ignore borders to "<<ignoreBorders<<std::endl;
+        std::cout << "Toggled ignore borders to " << ignoreBorders << std::endl;
     }
-    void addWindX(){
+
+    void addWindX() {
         for (int i = 0; i < fullGridSize; i++) {
             velocityX[i] += 0.5f;
         }
-        std::cout<<"Add Wind X "<<std::endl;
+        std::cout << "Add Wind X " << std::endl;
     }
-    void addWindY(){
+
+    void addWindY() {
         for (int i = 0; i < fullGridSize; i++) {
             velocityY[i] += 0.5f;
         }
-        std::cout<<"Add Wind Y "<<std::endl;
+        std::cout << "Add Wind Y " << std::endl;
     }
-    void subtractWindX(){
+
+    void subtractWindX() {
         for (int i = 0; i < fullGridSize; i++) {
             velocityX[i] -= 0.5f;
         }
-        std::cout<<"Subtract Wind X "<<std::endl;
+        std::cout << "Subtract Wind X " << std::endl;
     }
-    void subtractWindY(){
+
+    void subtractWindY() {
         for (int i = 0; i < fullGridSize; i++) {
             velocityY[i] -= 0.5f;
         }
-        std::cout<<"Subtract Wind Y "<<std::endl;
+        std::cout << "Subtract Wind Y " << std::endl;
     }
+
 private:
     int w;
     int h;

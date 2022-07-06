@@ -401,10 +401,10 @@ void FluidsSolver::updateNormalizedDensities() {
     }
 }
 
-void FluidsSolver::addDensitySpot(int xPosition, int yPosition, int radius) {
+void FluidsSolver::addDensitySpot(int xPosition, int yPosition, int radius, int stepSize) {
     for (int i = 1; i <= 10; i++) {
         fillCircle(xPosition, yPosition, i, radius);
-        radius -= 2;
+        radius -= stepSize;
         if (radius < 1)return;
     }
     updateNormalizedDensities();
