@@ -21,8 +21,9 @@ namespace FluidsWindow {
     int mouseY;
     int oldMouseX;
     int oldMouseY;
-    int mouseDown[3];
+    int mouseDown[5];
     int displayWindow = 1;
+    int radius = 25;
     std::string output_path;
 
     void renderScene() {
@@ -297,13 +298,12 @@ namespace FluidsWindow {
         } else if (mouseDown[1]) {
             xPos = (int) ((float) (oldMouseX) / currentW * (rowSize));
             yPos = (int) ((float) (HEIGHT - oldMouseY) / currentH * (colSize));
-            fluidsSolver->addDensitySpot(xPos, yPos);
+            fluidsSolver->addDensitySpot(xPos, yPos, radius);
 
             oldMouseX = mouseX;
             oldMouseY = mouseY;
         }
     }
-
     void mouseMove(int x, int y) {
         mouseX = x;
         mouseY = y;
@@ -316,7 +316,17 @@ namespace FluidsWindow {
         mouseX = x;
         mouseY = y;
 
-        mouseDown[button] = state == GLUT_DOWN;
+
+        // Wheel reports as button 3(scroll up) and button 4(scroll down)
+        if ((button == 3) || (button == 4)) // It's a wheel event
+        {
+            // Each wheel event reports like a button click, GLUT_DOWN then GLUT_UP
+            if (state == GLUT_UP) return; // Disregard redundant GLUT_UP events
+            if (button == 3) radius++;
+            if (button == 4) radius = (radius > 3) ? radius - 1 : 3;
+        }else{
+            mouseDown[button] = state == GLUT_DOWN;
+        }
     }
 
     void run() {
