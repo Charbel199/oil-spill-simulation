@@ -107,7 +107,7 @@ void FluidsSolver::exportArrayToCSV(float *values, std::string fileName) {
         outputFile << std::endl;
     }
     outputFile.close();
-    std::cout<<"Exported to "<<fileName<<" successfully"<<std::endl;
+    std::cout << "Exported to " << fileName << " successfully" << std::endl;
 }
 
 void FluidsSolver::reset() {
@@ -401,11 +401,11 @@ void FluidsSolver::updateNormalizedDensities() {
     }
 }
 
-void FluidsSolver::addDensitySpot(int xPosition, int yPosition) {
-    int radius = 25;
+void FluidsSolver::addDensitySpot(int xPosition, int yPosition, int radius) {
     for (int i = 1; i <= 10; i++) {
         fillCircle(xPosition, yPosition, i, radius);
         radius -= 2;
+        if (radius < 1)return;
     }
     updateNormalizedDensities();
 }
@@ -413,9 +413,8 @@ void FluidsSolver::addDensitySpot(int xPosition, int yPosition) {
 void FluidsSolver::fillCircle(int xPosition, int yPosition, int densityValue, int radius) {
     for (int i = 1; i <= w - 2; i++) {
         for (int j = 1; j <= h - 2; j++) {
-            if ((std::pow(i - xPosition,2) + std::pow(j - yPosition,2)) < std::pow(radius,2))
-            {
-                density[cIdx(i, j)] = densityValue * 3;
+            if ((std::pow(i - xPosition, 2) + std::pow(j - yPosition, 2)) < std::pow(radius, 2)) {
+                density[cIdx(i, j)] = densityValue * 4;
             }
         }
     }

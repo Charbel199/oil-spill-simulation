@@ -27,7 +27,7 @@ public:
     void addSource();
 
     // Add density spot
-    void addDensitySpot(int xPosition, int yPosition);
+    void addDensitySpot(int xPosition, int yPosition, int radius = 25);
     void fillCircle(int xPosition, int yPosition, int densityValue, int radius);
 
     // Clear previous velocity and density buffers
