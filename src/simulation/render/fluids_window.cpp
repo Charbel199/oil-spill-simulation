@@ -153,6 +153,7 @@ namespace FluidsWindow {
         std::cout << "'S'\t\t\tWind direction: Bottom\n";
         std::cout << "'D'\t\t\tWind direction: Right\n";
         std::cout << "\n";
+        std::cout << "'P'\t\t\tEnvironment to CSV\n";
         std::cout << "'X'\t\t\tClear density\n";
         std::cout << "'Z'\t\t\tClear velocity\n";
         std::cout << "'C'\t\t\tClear the entire simulation\n";
@@ -302,7 +303,7 @@ namespace FluidsWindow {
                 }
 
                 if (mouseDown[2]) {
-                    fluidsSolver->setPreviousDensity(xPos, yPos, 10.0f);
+                    fluidsSolver->setPreviousDensity(xPos, yPos, 30.0f);
                 }
 
                 oldMouseX = mouseX;
