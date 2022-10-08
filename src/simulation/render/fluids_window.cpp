@@ -303,7 +303,7 @@ namespace FluidsWindow {
                 }
 
                 if (mouseDown[2]) {
-                    fluidsSolver->setPreviousDensity(xPos, yPos, 30.0f);
+                    fluidsSolver->setPreviousDensity(xPos, yPos, 80.0f);
                 }
 
                 oldMouseX = mouseX;

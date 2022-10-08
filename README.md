@@ -29,7 +29,7 @@ To keep it simple:
 The ultimate goal is to solve the main physical equations of fluid flow (Such as the Navier-Stokes equation which gives us 
 a description of the evolution of a velocity field over time).
 
-![NavierStokes](assets/Navier-Stokes_Equations.png)
+![NavierStokes](docs/Navier-Stokes_Equations.png)
 
 The first equation represents the velocity equation (How the velocities change with time) and the second equation refers to 
 the density function (How density moves through time).
@@ -38,36 +38,36 @@ the density function (How density moves through time).
 
 Here is the start of the simulation where we introduced an oil spill ranging from 1 -> 10 mm.
 
-![t0](assets/first_simulation_t0.png)
+![t0](docs/first_simulation_t0.png)
 
 After introducing velocity vectors from the south-west directed to the north-east, we get the following result after a couple of seconds of simulation.
 
-![tT](assets/first_simulation_t+T.png)
+![tT](docs/first_simulation_t+T.png)
 
 You can take a look the velocity field that was introduced.
 
-![velocity](assets/first_simulation_velocity_field.png)
+![velocity](docs/first_simulation_velocity_field.png)
 
 Two parameters are mainly responsible for the diffusion of the density of the liquid and its velocity vectors:
 * Diffusion Coefficient: It is directly proportional to how fast the liquid density will diffuse (If no velocity vectors are acting on it, the liquid will start dispersing on its own)
 
 Low diffusion coefficient (~0.1)     |  High diffusion coefficient (~0.42)
 :-------------------------:|:-------------------------:
-![diff1](assets/first_simulation_low_diffusion_coef.gif)  |  ![diff2](assets/first_simulation_high_diffusion_coef.gif)
+![diff1](docs/first_simulation_low_diffusion_coef.gif)  |  ![diff2](docs/first_simulation_high_diffusion_coef.gif)
 
 
 * Viscosity Coefficient: It is directly proportional to how fast the velocity vectors will diffuse (Viscous liquids are less affected by velocity vectors that non-viscous liquids)
 
 Low viscosity coefficient (~0.1)     |  High viscosity coefficient (~1)
 :-------------------------:|:-------------------------:
-![visc1](assets/first_simulation_low_viscosity_coef.gif)  |  ![visc2](assets/first_simulation_high_viscosity_coef.gif)
+![visc1](docs/first_simulation_low_viscosity_coef.gif)  |  ![visc2](docs/first_simulation_high_viscosity_coef.gif)
 
 
 
 The simulation's performance is acceptable, though the grid size should not exceed 250x250 in general.
 Here is a full view of the oil spill simulation:
 
-![sim](assets/first_full_sim.gif)
+![sim](docs/first_full_sim.gif)
 
 # To-Do
 
