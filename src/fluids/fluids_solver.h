@@ -9,7 +9,7 @@
 
 class FluidsSolver {
 public:
-    FluidsSolver(int w = 128, int h = 128, float viscosityCoefficient = 1.0f,
+    FluidsSolver(int w = 128, int h = 128,int minThickness=0,int maxThickness=10,float viscosityCoefficient = 1.0f,
                  float vorticityCoefficient = 0.0f, float diffusionCoefficient = 0.02f, float timeStep = 1.0,
                  bool ignoreBorders = true);
 
@@ -146,6 +146,8 @@ public:
 private:
     int w;
     int h;
+    int minThickness;
+    int maxThickness;
     float viscosityCoefficient;
     float vorticityCoefficient;
     float diffusionCoefficient;

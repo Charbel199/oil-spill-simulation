@@ -5,10 +5,12 @@
 #include <algorithm>
 #include <cmath>
 
-FluidsSolver::FluidsSolver(int w, int h, float viscosityCoefficient, float vorticityCoefficient,
+FluidsSolver::FluidsSolver(int w, int h, int minThickness, int maxThickness, float viscosityCoefficient, float vorticityCoefficient,
                            float diffusionCoefficient, float timeStep, bool ignoreBorders) {
     this->w = w;
     this->h = h;
+    this->minThickness = minThickness;
+    this->maxThickness = maxThickness;
     this->viscosityCoefficient = viscosityCoefficient;
     this->vorticityCoefficient = vorticityCoefficient;
     this->diffusionCoefficient = diffusionCoefficient;
@@ -394,9 +396,9 @@ void FluidsSolver::updateNormalizedDensities() {
     for (int i = 0; i < fullGridSize; i++) {
         sum += density[i];
         if (density[i] > 30) {
-            normalizedDensity[i] = 10.0f;
+            normalizedDensity[i] = maxThickness;
         } else {
-            normalizedDensity[i] = ((density[i] - min) / (max - min)) * 10;
+            normalizedDensity[i] = ((density[i] - min) / (max - min)) * maxThickness + minThickness;
         }
     }
 }
