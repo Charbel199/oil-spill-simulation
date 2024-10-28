@@ -70,11 +70,16 @@ Here is a full view of the oil spill simulation:
 ![sim](docs/first_full_sim.gif)
 
 # How to run?
-
-1. Set the parameters in the [fluids window](src/simulation/render/fluids_window.cpp#L164) file
+1. Install the following packages:
+```bash
+sudo apt install freeglut3-dev nlohmann-json3-dev
+```
 2.  Run `cmake .`
 3.  After having all the cmake files ready, run the `make` command
 4. Launch the `Oil_Spill_Simulation` executable
+```bash
+./Oil_Spill_Simulation -h
+```
 
 # Resources & References
 

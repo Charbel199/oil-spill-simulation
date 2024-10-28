@@ -181,4 +181,3 @@ cmake-build-debug
 .vscode
 
 */output/*
-**/config.json
