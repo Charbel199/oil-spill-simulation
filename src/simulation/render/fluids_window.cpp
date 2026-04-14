@@ -294,7 +294,7 @@ namespace FluidsWindow {
 
         if (mouseDown[0] || mouseDown[2]) {
             xPos = (int) ((float) (oldMouseX) / currentW * (rowSize));
-            yPos = (int) ((float) (HEIGHT - oldMouseY) / currentH * (colSize));
+            yPos = (int) ((float) (currentH - oldMouseY) / currentH * (colSize));
 
             if (xPos > 0 && xPos < rowSize - 1 && yPos > 0 && yPos < colSize - 1) {
                 if (mouseDown[0]) {
@@ -313,7 +313,7 @@ namespace FluidsWindow {
             fluidsSolver->addSource();
         } else if (mouseDown[1]) {
             xPos = (int) ((float) (oldMouseX) / currentW * (rowSize));
-            yPos = (int) ((float) (HEIGHT - oldMouseY) / currentH * (colSize));
+            yPos = (int) ((float) (currentH - oldMouseY) / currentH * (colSize));
             fluidsSolver->addDensitySpot(xPos, yPos, radius, stepSize);
 
             oldMouseX = mouseX;
