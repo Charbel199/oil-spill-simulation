@@ -34,7 +34,7 @@ include_directories(src/fluids)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
-target_link_libraries(Oil_Spill_Simulation ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+target_link_libraries(Oil_Spill_Simulation ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} )
 
 # File system
 target_link_libraries(Oil_Spill_Simulation stdc++fs)
