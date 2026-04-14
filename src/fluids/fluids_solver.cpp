@@ -25,34 +25,35 @@ FluidsSolver::FluidsSolver(int w, int h, int minThickness, int maxThickness, flo
     maxY = h - 1.0f;
 
     // Allocating memory, all vectors will be 1D vector for efficiency
+    // Using calloc to zero-initialize all arrays
 
     // Velocity
-    velocityX = (float *) malloc(sizeof(float) * fullGridSize);
-    velocityY = (float *) malloc(sizeof(float) * fullGridSize);
-    prevVelocityX = (float *) malloc(sizeof(float) * fullGridSize);
-    prevVelocityY = (float *) malloc(sizeof(float) * fullGridSize);
+    velocityX = (float *) calloc(fullGridSize, sizeof(float));
+    velocityY = (float *) calloc(fullGridSize, sizeof(float));
+    prevVelocityX = (float *) calloc(fullGridSize, sizeof(float));
+    prevVelocityY = (float *) calloc(fullGridSize, sizeof(float));
 
     // Density
-    density = (float *) malloc(sizeof(float) * fullGridSize);
-    normalizedDensity = (float *) malloc(sizeof(float) * fullGridSize);
-    prevDensity = (float *) malloc(sizeof(float) * fullGridSize);
+    density = (float *) calloc(fullGridSize, sizeof(float));
+    normalizedDensity = (float *) calloc(fullGridSize, sizeof(float));
+    prevDensity = (float *) calloc(fullGridSize, sizeof(float));
 
     // Particle centers (Center of each grid)
-    particleX = (float *) malloc(sizeof(float) * fullGridSize);
-    particleY = (float *) malloc(sizeof(float) * fullGridSize);
+    particleX = (float *) calloc(fullGridSize, sizeof(float));
+    particleY = (float *) calloc(fullGridSize, sizeof(float));
 
     // Velocity field and divergence
-    divergence = (float *) malloc(sizeof(float) * fullGridSize);
-    divergenceFreeVelocityField = (float *) malloc(sizeof(float) * fullGridSize);
+    divergence = (float *) calloc(fullGridSize, sizeof(float));
+    divergenceFreeVelocityField = (float *) calloc(fullGridSize, sizeof(float));
 
     // Vorticity
-    vorticity = (float *) malloc(sizeof(float) * fullGridSize);
-    absVorticity = (float *) malloc(sizeof(float) * fullGridSize);
-    gradVorticityX = (float *) malloc(sizeof(float) * fullGridSize);
-    gradVorticityY = (float *) malloc(sizeof(float) * fullGridSize);
-    lenGradient = (float *) malloc(sizeof(float) * fullGridSize);
-    voriticityfx = (float *) malloc(sizeof(float) * fullGridSize);
-    vorticityfy = (float *) malloc(sizeof(float) * fullGridSize);
+    vorticity = (float *) calloc(fullGridSize, sizeof(float));
+    absVorticity = (float *) calloc(fullGridSize, sizeof(float));
+    gradVorticityX = (float *) calloc(fullGridSize, sizeof(float));
+    gradVorticityY = (float *) calloc(fullGridSize, sizeof(float));
+    lenGradient = (float *) calloc(fullGridSize, sizeof(float));
+    voriticityfx = (float *) calloc(fullGridSize, sizeof(float));
+    vorticityfy = (float *) calloc(fullGridSize, sizeof(float));
 
     for (int i = 0; i < w; i++) {
         for (int j = 0; j < h; j++) {
