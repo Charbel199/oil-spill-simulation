@@ -26,6 +26,9 @@ namespace FluidsWindow {
     int radius = 25;
     int stepSize = 2;
     std::string output_path;
+    int frameCount = 0;
+    int lastFpsTime = 0;
+    float currentFps = 0.0f;
 
     void renderScene() {
         getInput();
@@ -51,6 +54,22 @@ namespace FluidsWindow {
             glVertex2f(fluidsSolver->getParticlesX()[i], fluidsSolver->getParticlesY()[i]);
         }
         glEnd();
+
+        // FPS counter
+        frameCount++;
+        int currentTime = glutGet(GLUT_ELAPSED_TIME);
+        int elapsed = currentTime - lastFpsTime;
+        if (elapsed >= 1000) {
+            currentFps = frameCount * 1000.0f / elapsed;
+            frameCount = 0;
+            lastFpsTime = currentTime;
+        }
+        OpenGLHelper::drawText(
+            {0.0f, 0.0f, 0.0f},
+            {0, currentW, 0, currentH},
+            {10, currentH - 20},
+            std::to_string((int)currentFps)
+        );
 
         glutSwapBuffers();
 
